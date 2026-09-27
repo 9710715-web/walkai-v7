@@ -1,241 +1,2138 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111"><title>WALKAI V7 — Istanbul</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#111;font-family:Inter,Arial,sans-serif;color:#151515;overflow:hidden}.app{max-width:430px;margin:auto;height:100dvh;background:#f4f1eb;display:flex;flex-direction:column;overflow:hidden}
-header{height:58px;flex:0 0 58px;background:#111;color:#fff;padding:0 18px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:10}.logo{font-weight:900;font-size:21px;letter-spacing:1px}.gps{font-size:11px;color:#b9e5a8}
-.map{height:370px;flex:0 0 370px;position:relative;overflow:hidden;background:#e5e1d8}.water{position:absolute;left:-18%;top:-10%;height:125%;width:38%;background:#c7dce0;transform:rotate(8deg)}.grid{position:absolute;inset:-50px;background:linear-gradient(12deg,transparent 47%,#fff 48%,#fff 51%,transparent 52%),linear-gradient(102deg,transparent 47%,#d4d0c8 48%,#d4d0c8 50%,transparent 51%);background-size:115px 82px;transform:rotate(-8deg);opacity:.9}.route{position:absolute;left:27%;top:25%;width:48%;height:54%;border-left:5px solid #111;border-bottom:5px solid #111;border-radius:0 0 0 80px;transform:rotate(-18deg)}.marker{position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;border:5px solid #111;box-shadow:0 2px 8px #777}.m1{left:63%;top:25%}.m2{left:56%;top:38%}.m3{left:50%;top:49%}.m4{left:43%;top:61%}.m5{left:36%;top:72%}.you{position:absolute;left:59%;top:34%;width:18px;height:18px;border-radius:50%;background:#2677ff;border:4px solid #fff;box-shadow:0 0 0 6px #2677ff33}.mapcard{position:absolute;top:14px;left:14px;background:#fff;border-radius:15px;padding:10px 12px;box-shadow:0 4px 15px #0002;font-size:12px;font-weight:800}.locate{position:absolute;right:14px;bottom:14px;width:44px;height:44px;border-radius:50%;background:#fff;border:0;font-size:19px;box-shadow:0 4px 15px #0002}
-.sheet{margin-top:-18px;position:relative;background:#fff;border-radius:24px 24px 0 0;padding:12px 16px 0;min-height:0;flex:1 1 auto;overflow:hidden;display:flex;flex-direction:column;z-index:2}
-.stageHeader{flex:0 0 auto;background:#fff;padding:2px 2px 10px;border-bottom:1px solid #eeeae4;position:relative;z-index:5}
-.eyebrow{font-size:10px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:.7px}.stageHeader h1{font-size:21px;line-height:1.15;margin:3px 0 0}
-.storyWrap{display:none}.storyWrap::-webkit-scrollbar{width:4px}.storyWrap::-webkit-scrollbar-thumb{background:#d0ccc4;border-radius:10px}
-.story{font-size:15px;line-height:1.55;color:#333}.progress{height:4px;background:#e7e4de;border-radius:5px;margin:15px 0}.progress b{display:block;height:100%;background:#111;border-radius:5px;width:12.5%}.meta{display:flex;justify-content:space-between;color:#777;font-size:11px}
-.controls{margin-top:auto;flex:0 0 auto;background:#fff;padding:7px 0 calc(8px + env(safe-area-inset-bottom));position:relative;z-index:20;border-top:1px solid #f0ede8}
-.mainListen{width:100%;height:58px;margin-top:0;padding:10px 14px;border-radius:15px;background:#111;color:#fff;border:0;font-weight:900;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}.mainListen.speaking{background:#2a2a2a}.mainListen .sub{display:block;font-size:9px;font-weight:500;opacity:.65;margin-top:3px}
-.bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:7px;align-items:center}.navBtn{height:58px;border:0;border-radius:12px;padding:8px 7px;font-weight:900;font-size:12px;background:#eeeae2;color:#151515}.navBtn:active,.cameraBtn:active{transform:scale(.98)}.mic{width:100%;height:58px;justify-self:stretch;align-self:center;border-radius:12px;border:0;background:#111;color:#fff;font-size:21px;font-weight:900;box-shadow:0 4px 14px #0002}.mic.recording{animation:pulse 1s infinite;background:#c9b48b;color:#111}.mic.processing{background:#ddd7cc;color:#111;animation:none}@keyframes pulse{50%{transform:scale(1.06);opacity:.8}}
-.cameraBtn{width:100%;height:58px;margin-top:7px;padding:8px;border:0;border-radius:12px;background:#eeeae2;color:#151515;font-weight:900;font-size:12px}.panelBackdrop{display:none;position:fixed;inset:0;background:#0007;z-index:40}.panelBackdrop.show{display:block}.panel{display:none;position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);max-height:78dvh;overflow:auto;padding:16px 16px calc(18px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;background:#f5f3ef;z-index:50;box-shadow:0 -12px 35px #0004}.panel.show{display:block}.panel img#photo{display:none;width:100%;height:190px;object-fit:cover;border-radius:14px;margin-top:8px}.panel h2{margin:0 0 8px;font-size:18px}.panel p{font-size:14px;line-height:1.5}.panelClose{float:right;border:0;background:#e7e2da;border-radius:50%;width:30px;height:30px;font-size:18px}#cam{display:none;width:100%;height:210px;object-fit:cover;border-radius:14px}.panel button.full{width:100%;margin-top:8px;padding:11px;border:0;border-radius:13px;font-weight:800}.toast{position:fixed;bottom:112px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 13px;border-radius:14px;font-size:12px;z-index:60;max-width:90%;text-align:center}.voiceStatus{display:none;font-size:12px;color:#555;margin-top:6px;text-align:center}.voiceStatus.show{display:block}.smallNote{font-size:11px;color:#888;line-height:1.4;margin-top:10px}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111">
+<title>WALKAI V7 — Istanbul</title>
 
-/* V7 FIX — fixed navigation architecture */
-.storyWrap{scrollbar-gutter:stable}
-@media(max-width:430px){
-  .sheet{padding-left:14px;padding-right:14px}
-  .stageHeader h1{font-size:20px}
-  .map{height:370px;flex-basis:370px}
-  .mainListen{height:58px;padding:10px 12px}
-  .navBtn,.cameraBtn{height:58px;padding:8px 6px}
-}
-@media(max-width:430px){
-  .sheet{padding-left:14px;padding-right:14px}
-  .stageHeader{padding-bottom:9px}
-  .stageHeader h1{font-size:20px}
-  .controls{padding-top:7px}
-  .map{height:370px;flex-basis:370px}
-}
-.map{height:370px!important;flex-basis:370px!important}
-.sheet{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
-.controls{margin-top:auto!important}
-</style>
 <style>
-/* FIX 8 */
-.visionMedia{width:100%;border-radius:16px;overflow:hidden;background:#e8e5df;margin-bottom:10px}
-.visionMedia video,.visionMedia img{display:none;width:100%;max-height:36dvh;object-fit:cover;background:#111}.visionMedia.live video{display:block}.visionMedia.hasPhoto img{display:block}
-.visionText{font-size:15px;line-height:1.5;padding:2px 2px 4px;color:#252321}.visionTitle{font-size:19px;font-weight:900;margin-bottom:7px}.visionDesc{font-size:14px;line-height:1.5}.visionLoading{display:flex;align-items:center;gap:8px;font-weight:800}.visionDot{width:9px;height:9px;border-radius:50%;background:#111;animation:vdot 1s infinite}@keyframes vdot{50%{opacity:.25;transform:scale(.7)}}
-.visionActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.visionBtn{height:58px;border:0;border-radius:12px;background:#eeeae2;color:#151515;font-weight:900;font-size:12px;padding:8px 6px}.visionBtn.primary{background:#111;color:#fff}.visionResultActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.visionResultActions button{height:50px;border:0;border-radius:12px;font-weight:900;font-size:12px}.visionResultActions .speakBtn{background:#111;color:#fff}.visionResultActions .detailBtn{background:#d9c7a5;color:#111}.captureBtn{display:none;width:100%;height:52px;margin-top:8px;border:0;border-radius:12px;background:#111;color:#fff;font-weight:900;font-size:13px}.panel.busy .visionActions{opacity:.55;pointer-events:none}
-.mic{width:100%;height:58px;border:0;border-radius:12px;background:#111;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}
-.mic span{font-size:12px}
-</style></head>
-<body><div class="app">
-<header><div class="logo">WALKAI</div><div class="gps" id="gps">● GPS готов</div></header>
-<div class="map"><div class="water"></div><div class="grid"></div><div class="route"></div><div class="mapcard">GALATA → PERA<br><span style="font-weight:500">8 остановок · 1 ч 25 мин</span></div><div class="marker m1"></div><div class="marker m2"></div><div class="marker m3"></div><div class="marker m4"></div><div class="marker m5"></div><div class="you" id="you"></div><button class="locate" onclick="locate()">⌖</button></div>
-<section class="sheet">
-<div class="stageHeader">
-  <div class="eyebrow" id="count">Остановка 1 из 8 · 40 м</div>
-  <h1 id="title">Галатская башня</h1>
-</div>
-<div class="controls">
-  <button class="mainListen" id="listen" onclick="listenStory()">▶ Слушать гида<span class="sub">Естественный AI-голос</span></button>
-  <div class="bottom">
-    <button class="navBtn" onclick="previous()">← Назад</button>
-    <button class="mic" id="micBtn" onclick="startVoiceQuestion()" aria-label="Вопрос гиду">🎙 <span>Вопрос гиду</span></button>
-    <button class="navBtn" onclick="next()">Дальше →</button>
-  </div>
-  <div class="voiceStatus" id="voiceStatus">Слушаю…</div>
-  <button class="cameraBtn" onclick="camera()">📷 Что я вижу?</button>
-</div>
-</section>
-<div class="panelBackdrop" id="panelBackdrop" onclick="camera()"></div>
-<div class="panel" id="camPanel">
-<button class="panelClose" onclick="camera()" aria-label="Закрыть">×</button>
-<h2>Что я вижу?</h2>
-<div class="visionMedia" id="visionMedia"><video id="cam" autoplay playsinline></video><img id="photo" alt="Фото объекта"></div>
-<input id="photoInput" type="file" accept="image/*" capture="environment" style="display:none" onchange="photoTaken(this)">
-<div class="visionText" id="vision">Сфотографируйте объект. WALKAI определит его, покажет название и коротко расскажет о нём.</div>
-<div class="visionActions">
-<button class="visionBtn" onclick="takePhoto()">📸 Сделать фото</button>
-<button class="visionBtn" id="liveCamBtn" onclick="startCam()">🎥 Включить камеру</button>
-</div>
-<button class="captureBtn" id="captureBtn" onclick="capturePhoto()">📸 Сфотографировать</button>
-<div class="visionResultActions" id="visionResultActions" style="display:none">
-<button class="speakBtn" onclick="speakVision()">🔊 Озвучить</button>
-<button class="detailBtn" onclick="visionDetail()">✨ Рассказать подробнее</button>
-</div>
-</div>
-<script>
-const data=[
-{t:'Галатская башня',s:'Остановитесь на секунду. Поднимите голову. Перед вами Галатская башня — один из самых узнаваемых ориентиров этой части Стамбула. Нынешняя башня связана с генуэзским периодом Галаты и была завершена в XIV веке. А история о полёте Хезарфена Челеби отсюда — знаменитый рассказ, который WALKAI обозначает именно как легенду.',n:'Камондо лестница',d:'280 м · 4 мин'},
-{t:'Камондо лестница',s:'Посмотрите на форму ступеней. Эта необычная лестница связана с семьёй Камондо и историей европейской Галаты XIX века. Её изгибы были не только красивыми — они помогали удобно соединить разные уровни улиц.',n:'Bankalar Caddesi',d:'350 м · 5 мин'},
-{t:'Bankalar Caddesi',s:'Сегодня это обычная городская улица. Но в XIX веке здесь концентрировалась финансовая жизнь османской Галаты. Здесь находились банки, страховые компании и торговые представительства.',n:'Истикляль',d:'700 м · 9 мин'},
-{t:'Истикляль',s:'Сейчас вокруг современный Стамбул. Но эта улица хранит несколько исторических слоёв — от Перы XIX века до сегодняшнего города. Попробуйте заметить, как рядом существуют разные архитектурные эпохи.',n:'Цветочный пассаж',d:'500 м · 7 мин'},
-{t:'Цветочный пассаж',s:'Оглянитесь вокруг. Это место связано с театральной и ресторанной историей Перы и пережило несколько эпох города. WALKAI может рассказать подробнее, если вы остановитесь здесь.',n:'Святой Антоний',d:'450 м · 6 мин'},
-{t:'Святой Антоний',s:'Перед нами одна из заметных католических церквей Бейоглу. Здесь особенно хорошо видна многослойность района: османский город, европейские общины и современный Стамбул существуют буквально на одной улице.',n:'Pera Palace',d:'800 м · 11 мин'},
-{t:'Pera Palace',s:'Представьте пассажиров Восточного экспресса, прибывающих в Константинополь. Отель открылся в 1895 году и стал частью истории Перы. Здесь можно сделать остановку и переключить WALKAI в режим «История вокруг меня».',n:'Таксим',d:'900 м · 12 мин'},
-{t:'Таксим',s:'Мы закончили маршрут. Но прогулка может продолжиться. WALKAI может подобрать следующий маршрут по времени, интересам и вашему темпу.',n:'Новый маршрут',d:'—'}];
-let i=0,audio=null,recording=false,recorder=null,chunks=[];
-const $=id=>document.getElementById(id);
-function render(){const d=data[i];$('title').textContent=d.t;$('count').textContent=`Остановка ${i+1} из 8 · ${i?120:40} м`;}
-function stopAudio(){
-  if(audio){audio.pause();audio.currentTime=0;audio=null}
-  if('speechSynthesis' in window) window.speechSynthesis.cancel();
-  $('listen').classList.remove('speaking');
-  $('listen').innerHTML='▶ Слушать гида<span class="sub">Естественный AI-голос</span>';
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#111;
+  font-family:Inter,Arial,sans-serif;
+  color:#151515;
+  overflow:hidden
 }
+
+.app{
+  max-width:430px;
+  margin:auto;
+  height:100dvh;
+  background:#f4f1eb;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden
+}
+
+header{
+  height:58px;
+  flex:0 0 58px;
+  background:#111;
+  color:#fff;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  z-index:10
+}
+
+.logo{
+  font-weight:900;
+  font-size:21px;
+  letter-spacing:1px
+}
+
+.gps{
+  font-size:11px;
+  color:#b9e5a8
+}
+
+.map{
+  height:370px;
+  flex:0 0 370px;
+  position:relative;
+  overflow:hidden;
+  background:#e5e1d8
+}
+
+.water{
+  position:absolute;
+  left:-18%;
+  top:-10%;
+  height:125%;
+  width:38%;
+  background:#c7dce0;
+  transform:rotate(8deg)
+}
+
+.grid{
+  position:absolute;
+  inset:-50px;
+  background:
+    linear-gradient(12deg,transparent 47%,#fff 48%,#fff 51%,transparent 52%),
+    linear-gradient(102deg,transparent 47%,#d4d0c8 48%,#d4d0c8 50%,transparent 51%);
+  background-size:115px 82px;
+  transform:rotate(-8deg);
+  opacity:.9
+}
+
+.route{
+  position:absolute;
+  left:27%;
+  top:25%;
+  width:48%;
+  height:54%;
+  border-left:5px solid #111;
+  border-bottom:5px solid #111;
+  border-radius:0 0 0 80px;
+  transform:rotate(-18deg)
+}
+
+.marker{
+  position:absolute;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#fff;
+  border:5px solid #111;
+  box-shadow:0 2px 8px #777
+}
+
+.m1{left:63%;top:25%}
+.m2{left:56%;top:38%}
+.m3{left:50%;top:49%}
+.m4{left:43%;top:61%}
+.m5{left:36%;top:72%}
+
+.you{
+  position:absolute;
+  left:59%;
+  top:34%;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#2677ff;
+  border:4px solid #fff;
+  box-shadow:0 0 0 6px #2677ff33
+}
+
+.mapcard{
+  position:absolute;
+  top:14px;
+  left:14px;
+  background:#fff;
+  border-radius:15px;
+  padding:10px 12px;
+  box-shadow:0 4px 15px #0002;
+  font-size:12px;
+  font-weight:800
+}
+
+.locate{
+  position:absolute;
+  right:14px;
+  bottom:14px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:#fff;
+  border:0;
+  font-size:19px;
+  box-shadow:0 4px 15px #0002
+}
+
+.sheet{
+  margin-top:-18px;
+  position:relative;
+  background:#fff;
+  border-radius:24px 24px 0 0;
+  padding:12px 16px 0;
+  min-height:0;
+  flex:1 1 auto;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  z-index:2
+}
+
+.stageHeader{
+  flex:0 0 auto;
+  background:#fff;
+  padding:2px 2px 10px;
+  border-bottom:1px solid #eeeae4;
+  position:relative;
+  z-index:5
+}
+
+.eyebrow{
+  font-size:10px;
+  color:#777;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.7px
+}
+
+.stageHeader h1{
+  font-size:21px;
+  line-height:1.15;
+  margin:3px 0 0
+}
+
+.storyWrap{
+  display:none
+}
+
+.storyWrap::-webkit-scrollbar{
+  width:4px
+}
+
+.storyWrap::-webkit-scrollbar-thumb{
+  background:#d0ccc4;
+  border-radius:10px
+}
+
+.story{
+  font-size:15px;
+  line-height:1.55;
+  color:#333
+}
+
+.progress{
+  height:4px;
+  background:#e7e4de;
+  border-radius:5px;
+  margin:15px 0
+}
+
+.progress b{
+  display:block;
+  height:100%;
+  background:#111;
+  border-radius:5px;
+  width:12.5%
+}
+
+.meta{
+  display:flex;
+  justify-content:space-between;
+  color:#777;
+  font-size:11px
+}
+
+.controls{
+  margin-top:auto;
+  flex:0 0 auto;
+  background:#fff;
+  padding:7px 0 calc(8px + env(safe-area-inset-bottom));
+  position:relative;
+  z-index:20;
+  border-top:1px solid #f0ede8
+}
+
+.mainListen{
+  width:100%;
+  height:58px;
+  margin-top:0;
+  padding:10px 14px;
+  border-radius:15px;
+  background:#111;
+  color:#fff;
+  border:0;
+  font-weight:900;
+  font-size:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  line-height:1.1
+}
+
+.mainListen.speaking{
+  background:#2a2a2a
+}
+
+.mainListen .sub{
+  display:block;
+  font-size:9px;
+  font-weight:500;
+  opacity:.65;
+  margin-top:3px
+}
+
+.bottom{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  margin-top:7px;
+  align-items:center
+}
+
+.navBtn{
+  height:58px;
+  border:0;
+  border-radius:12px;
+  padding:8px 7px;
+  font-weight:900;
+  font-size:12px;
+  background:#eeeae2;
+  color:#151515
+}
+
+.navBtn:active,
+.cameraBtn:active{
+  transform:scale(.98)
+}
+
+.mic{
+  width:100%;
+  height:58px;
+  justify-self:stretch;
+  align-self:center;
+  border-radius:12px;
+  border:0;
+  background:#111;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-shadow:0 4px 14px #0002
+}
+
+.mic.recording{
+  animation:pulse 1s infinite;
+  background:#c9b48b;
+  color:#111
+}
+
+.mic.processing{
+  background:#ddd7cc;
+  color:#111;
+  animation:none
+}
+
+.mic span{
+  font-size:12px
+}
+
+@keyframes pulse{
+  50%{
+    transform:scale(1.06);
+    opacity:.8
+  }
+}
+
+.cameraBtn{
+  width:100%;
+  height:58px;
+  margin-top:7px;
+  padding:8px;
+  border:0;
+  border-radius:12px;
+  background:#eeeae2;
+  color:#151515;
+  font-weight:900;
+  font-size:12px
+}
+
+/* ВАЖНО:
+   Статус микрофона больше не занимает отдельную строку.
+   Поэтому меню не сдвигается вверх/вниз.
+*/
+.voiceStatus{
+  display:none!important
+}
+
+.smallNote{
+  font-size:11px;
+  color:#888;
+  line-height:1.4;
+  margin-top:10px
+}
+
+/* FIX — стабильная архитектура */
+.storyWrap{
+  scrollbar-gutter:stable
+}
+
+/* ПАНЕЛЬ "ЧТО Я ВИЖУ?" */
+.panelBackdrop{
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:40;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease
+}
+
+.panelBackdrop.show{
+  opacity:1;
+  pointer-events:auto
+}
+
+.panel{
+  position:fixed;
+  left:50%;
+  top:74px;
+  bottom:0;
+  transform:translate(-50%,100%);
+  width:min(430px,100vw);
+  overflow:auto;
+  padding:12px 14px calc(18px + env(safe-area-inset-bottom));
+  border-radius:22px 22px 0 0;
+  background:#f5f3ef;
+  z-index:50;
+  box-shadow:0 -12px 35px #0004;
+  transition:transform .24s ease;
+  visibility:hidden
+}
+
+.panel.show{
+  transform:translate(-50%,0);
+  visibility:visible
+}
+
+.panel h2{
+  margin:0 0 8px;
+  font-size:18px
+}
+
+.panel p{
+  font-size:14px;
+  line-height:1.5
+}
+
+/* Большая кнопка возврата */
+.panelClose{
+  float:none;
+  width:100%;
+  height:44px;
+  border:0;
+  background:#e7e2da;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:900;
+  color:#151515;
+  margin-bottom:10px
+}
+
+.visionMedia{
+  width:100%;
+  border-radius:16px;
+  overflow:hidden;
+  background:#e8e5df;
+  margin-bottom:10px
+}
+
+.visionMedia video,
+.visionMedia img{
+  display:none;
+  width:100%;
+  max-height:36dvh;
+  object-fit:cover;
+  background:#111
+}
+
+.visionMedia.live video{
+  display:block
+}
+
+.visionMedia.hasPhoto img{
+  display:block
+}
+
+#cam{
+  display:none;
+  width:100%;
+  height:210px;
+  object-fit:cover;
+  border-radius:14px
+}
+
+.visionText{
+  font-size:15px;
+  line-height:1.5;
+  padding:2px 2px 4px;
+  color:#252321
+}
+
+.visionTitle{
+  font-size:19px;
+  font-weight:900;
+  margin-bottom:7px
+}
+
+.visionDesc{
+  font-size:14px;
+  line-height:1.5
+}
+
+.visionLoading{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800
+}
+
+.visionDot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#111;
+  animation:vdot 1s infinite
+}
+
+@keyframes vdot{
+  50%{
+    opacity:.25;
+    transform:scale(.7)
+  }
+}
+
+.visionActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px
+}
+
+.visionBtn{
+  height:58px;
+  border:0;
+  border-radius:12px;
+  background:#eeeae2;
+  color:#151515;
+  font-weight:900;
+  font-size:12px;
+  padding:8px 6px
+}
+
+.visionBtn.primary{
+  background:#111;
+  color:#fff
+}
+
+.visionResultActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px
+}
+
+.visionResultActions button{
+  height:50px;
+  border:0;
+  border-radius:12px;
+  font-weight:900;
+  font-size:12px
+}
+
+.visionResultActions .speakBtn{
+  background:#111;
+  color:#fff
+}
+
+.visionResultActions .detailBtn{
+  background:#d9c7a5;
+  color:#111
+}
+
+.captureBtn{
+  display:none;
+  width:100%;
+  height:52px;
+  margin-top:8px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+  font-weight:900;
+  font-size:13px
+}
+
+.panel.busy .visionActions{
+  opacity:.55;
+  pointer-events:none
+}
+
+.panel img#photo{
+  display:none;
+  width:100%;
+  height:190px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-top:8px
+}
+
+.panel button.full{
+  width:100%;
+  margin-top:8px;
+  padding:11px;
+  border:0;
+  border-radius:13px;
+  font-weight:800
+}
+
+.toast{
+  position:fixed;
+  bottom:112px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  color:#fff;
+  padding:10px 13px;
+  border-radius:14px;
+  font-size:12px;
+  z-index:60;
+  max-width:90%;
+  text-align:center
+}
+
+@media(max-width:430px){
+
+  .sheet{
+    padding-left:14px;
+    padding-right:14px
+  }
+
+  .stageHeader{
+    padding-bottom:9px
+  }
+
+  .stageHeader h1{
+    font-size:20px
+  }
+
+  .controls{
+    padding-top:7px
+  }
+
+  .map{
+    height:370px;
+    flex-basis:370px
+  }
+
+  .mainListen{
+    height:58px;
+    padding:10px 12px
+  }
+
+  .navBtn,
+  .cameraBtn{
+    height:58px;
+    padding:8px 6px
+  }
+}
+
+.map{
+  height:370px!important;
+  flex-basis:370px!important
+}
+
+.sheet{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow:hidden!important
+}
+
+.controls{
+  margin-top:auto!important
+}
+</style>
+
+<style>
+/* Дополнительные стили камеры */
+.visionMedia{
+  width:100%;
+  border-radius:16px;
+  overflow:hidden;
+  background:#e8e5df;
+  margin-bottom:10px
+}
+
+.visionMedia video,
+.visionMedia img{
+  display:none;
+  width:100%;
+  max-height:36dvh;
+  object-fit:cover;
+  background:#111
+}
+
+.visionMedia.live video{
+  display:block
+}
+
+.visionMedia.hasPhoto img{
+  display:block
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">WALKAI</div>
+  <div class="gps" id="gps">● GPS готов</div>
+</header>
+
+<div class="map">
+
+  <div class="water"></div>
+  <div class="grid"></div>
+  <div class="route"></div>
+
+  <div class="mapcard">
+    GALATA → PERA<br>
+    <span style="font-weight:500">8 остановок · 1 ч 25 мин</span>
+  </div>
+
+  <div class="marker m1"></div>
+  <div class="marker m2"></div>
+  <div class="marker m3"></div>
+  <div class="marker m4"></div>
+  <div class="marker m5"></div>
+
+  <div class="you" id="you"></div>
+
+  <button class="locate" onclick="locate()">⌖</button>
+
+</div>
+
+<section class="sheet">
+
+  <div class="stageHeader">
+
+    <div class="eyebrow" id="count">
+      Остановка 1 из 8 · 40 м
+    </div>
+
+    <h1 id="title">
+      Галатская башня
+    </h1>
+
+  </div>
+
+  <div class="controls">
+
+    <button
+      class="mainListen"
+      id="listen"
+      onclick="listenStory()"
+    >
+      ▶ Слушать гида
+      <span class="sub">Естественный AI-голос</span>
+    </button>
+
+    <div class="bottom">
+
+      <button
+        class="navBtn"
+        onclick="previous()"
+      >
+        ← Назад
+      </button>
+
+      <button
+        class="mic"
+        id="micBtn"
+        onclick="startVoiceQuestion()"
+        aria-label="Вопрос гиду"
+      >
+        🎙 <span>Вопрос гиду</span>
+      </button>
+
+      <button
+        class="navBtn"
+        onclick="next()"
+      >
+        Дальше →
+      </button>
+
+    </div>
+
+    <!-- Оставляем элемент для совместимости,
+         но CSS больше не даёт ему занимать место -->
+    <div
+      class="voiceStatus"
+      id="voiceStatus"
+    >
+      Слушаю…
+    </div>
+
+    <button
+      class="cameraBtn"
+      onclick="camera()"
+    >
+      📷 Что я вижу?
+    </button>
+
+  </div>
+
+</section>
+
+<!-- Затемнение -->
+<div
+  class="panelBackdrop"
+  id="panelBackdrop"
+  onclick="camera()"
+></div>
+
+<!-- Панель камеры -->
+<div
+  class="panel"
+  id="camPanel"
+>
+
+  <button
+    class="panelClose"
+    onclick="camera()"
+    aria-label="Вернуться к маршруту"
+  >
+    ← Вернуться к маршруту
+  </button>
+
+  <h2>Что я вижу?</h2>
+
+  <div
+    class="visionMedia"
+    id="visionMedia"
+  >
+    <video
+      id="cam"
+      autoplay
+      playsinline
+    ></video>
+
+    <img
+      id="photo"
+      alt="Фото объекта"
+    >
+  </div>
+
+  <input
+    id="photoInput"
+    type="file"
+    accept="image/*"
+    capture="environment"
+    style="display:none"
+    onchange="photoTaken(this)"
+  >
+
+  <div
+    class="visionText"
+    id="vision"
+  >
+    Сфотографируйте объект. WALKAI определит его,
+    покажет название и коротко расскажет о нём.
+  </div>
+
+  <div class="visionActions">
+
+    <button
+      class="visionBtn"
+      onclick="takePhoto()"
+    >
+      📸 Сделать фото
+    </button>
+
+    <button
+      class="visionBtn"
+      id="liveCamBtn"
+      onclick="startCam()"
+    >
+      🎥 Включить камеру
+    </button>
+
+  </div>
+
+  <button
+    class="captureBtn"
+    id="captureBtn"
+    onclick="capturePhoto()"
+  >
+    📸 Сфотографировать
+  </button>
+
+  <div
+    class="visionResultActions"
+    id="visionResultActions"
+    style="display:none"
+  >
+
+    <button
+      class="speakBtn"
+      onclick="speakVision()"
+    >
+      🔊 Озвучить
+    </button>
+
+    <button
+      class="detailBtn"
+      onclick="visionDetail()"
+    >
+      ✨ Рассказать подробнее
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+const data=[
+
+  {
+    t:'Галатская башня',
+    s:'Остановитесь на секунду. Поднимите голову. Перед вами Галатская башня — один из самых узнаваемых ориентиров этой части Стамбула. Нынешняя башня связана с генуэзским периодом Галаты и была завершена в XIV веке. А история о полёте Хезарфена Челеби отсюда — знаменитый рассказ, который WALKAI обозначает именно как легенду.',
+    n:'Камондо лестница',
+    d:'280 м · 4 мин'
+  },
+
+  {
+    t:'Камондо лестница',
+    s:'Посмотрите на форму ступеней. Эта необычная лестница связана с семьёй Камондо и историей европейской Галаты XIX века. Её изгибы были не только красивыми — они помогали удобно соединить разные уровни улиц.',
+    n:'Bankalar Caddesi',
+    d:'350 м · 5 мин'
+  },
+
+  {
+    t:'Bankalar Caddesi',
+    s:'Сегодня это обычная городская улица. Но в XIX веке здесь концентрировалась финансовая жизнь османской Галаты. Здесь находились банки, страховые компании и торговые представительства.',
+    n:'Истикляль',
+    d:'700 м · 9 мин'
+  },
+
+  {
+    t:'Истикляль',
+    s:'Сейчас вокруг современный Стамбул. Но эта улица хранит несколько исторических слоёв — от Перы XIX века до сегодняшнего города. Попробуйте заметить, как рядом существуют разные архитектурные эпохи.',
+    n:'Цветочный пассаж',
+    d:'500 м · 7 мин'
+  },
+
+  {
+    t:'Цветочный пассаж',
+    s:'Оглянитесь вокруг. Это место связано с театральной и ресторанной историей Перы и пережило несколько эпох города. WALKAI может рассказать подробнее, если вы остановитесь здесь.',
+    n:'Святой Антоний',
+    d:'450 м · 6 мин'
+  },
+
+  {
+    t:'Святой Антоний',
+    s:'Перед нами одна из заметных католических церквей Бейоглу. Здесь особенно хорошо видна многослойность района: османский город, европейские общины и современный Стамбул существуют буквально на одной улице.',
+    n:'Pera Palace',
+    d:'800 м · 11 мин'
+  },
+
+  {
+    t:'Pera Palace',
+    s:'Представьте пассажиров Восточного экспресса, прибывающих в Константинополь. Отель открылся в 1895 году и стал частью истории Перы. Здесь можно сделать остановку и переключить WALKAI в режим «История вокруг меня».',
+    n:'Таксим',
+    d:'900 м · 12 мин'
+  },
+
+  {
+    t:'Таксим',
+    s:'Мы закончили маршрут. Но прогулка может продолжиться. WALKAI может подобрать следующий маршрут по времени, интересам и вашему темпу.',
+    n:'Новый маршрут',
+    d:'—'
+  }
+
+];
+
+let i=0;
+let audio=null;
+let recording=false;
+let recorder=null;
+let chunks=[];
+let voiceCancelled=false;
+
+const $=id=>document.getElementById(id);
+
+function render(){
+
+  const d=data[i];
+
+  $('title').textContent=d.t;
+
+  $('count').textContent=
+    `Остановка ${i+1} из 8 · ${i?120:40} м`;
+
+}
+
+function stopAudio(){
+
+  if(audio){
+    audio.pause();
+    audio.currentTime=0;
+    audio=null;
+  }
+
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+  }
+
+  $('listen').classList.remove('speaking');
+
+  $('listen').innerHTML=
+    '▶ Слушать гида<span class="sub">Естественный AI-голос</span>';
+
+}
+
 async function speak(text){
+
   stopAudio();
-  $('listen').innerHTML='● Гид говорит…<span class="sub">Один тап — остановить</span>';
+
+  $('listen').innerHTML=
+    '● Гид говорит…<span class="sub">Один тап — остановить</span>';
+
   $('listen').classList.add('speaking');
+
   try{
-    const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
-    if(!r.ok) throw new Error('TTS '+r.status);
+
+    const r=await fetch(
+      '/api/tts',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({text})
+      }
+    );
+
+    if(!r.ok){
+      throw new Error('TTS '+r.status);
+    }
+
     const blob=await r.blob();
-    audio=new Audio(URL.createObjectURL(blob));
+
+    audio=new Audio(
+      URL.createObjectURL(blob)
+    );
+
     audio.onended=()=>stopAudio();
-    audio.onerror=()=>{throw new Error('audio')};
+
+    audio.onerror=()=>{
+      throw new Error('audio')
+    };
+
     await audio.play();
+
   }catch(e){
-    // Рабочий fallback: озвучка самого браузера, даже если сервер/API недоступен.
+
     if('speechSynthesis' in window){
+
       const u=new SpeechSynthesisUtterance(text);
-      u.lang='ru-RU'; u.rate=.96; u.pitch=1;
-      u.onend=()=>stopAudio(); u.onerror=()=>{stopAudio();toast('Не удалось включить звук')};
+
+      u.lang='ru-RU';
+      u.rate=.96;
+      u.pitch=1;
+
+      u.onend=()=>stopAudio();
+
+      u.onerror=()=>{
+        stopAudio();
+        toast('Не удалось включить звук')
+      };
+
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
+
     }else{
-      stopAudio(); toast('В этом браузере нет поддержки озвучки');
+
+      stopAudio();
+
+      toast(
+        'В этом браузере нет поддержки озвучки'
+      );
+
     }
+
   }
+
 }
+
 function listenStory(){
-  if(audio || ('speechSynthesis' in window && window.speechSynthesis.speaking)){stopAudio();return}
-  speak(data[i].s);
-}
-function previous(){
-  stopAudio();stopRecording();
-  if(i>0){i--;render();$('storyWrap')?.scrollTo({top:0,behavior:'smooth'});}
-  else {};
-}
-function next(){
-  stopAudio();stopRecording();
-  if(i<7){i++;render();$('storyWrap')?.scrollTo({top:0,behavior:'smooth'});}
-  else {};
-}
-let visionResult={title:'',description:''};
-function camera(){
-  const p=$('camPanel'),b=$('panelBackdrop');
-  const open=!p.classList.contains('show');
-  p.classList.toggle('show',open); b.classList.toggle('show',open);
-  if(!open) stopCam();
-}
-function resetVision(){
-  stopCam(); visionResult={title:'',description:''};
-  $('visionMedia').classList.remove('live','hasPhoto'); $('photo').style.display='none'; $('cam').style.display='none';
-  $('captureBtn').style.display='none'; $('visionResultActions').style.display='none'; $('camPanel').classList.remove('busy');
-  $('vision').innerHTML='Сфотографируйте объект. WALKAI определит его, покажет название и коротко расскажет о нём.';
-}
-function takePhoto(){
-  if($('camPanel').classList.contains('busy')) return;
-  $('photoInput').click();
-}
-function stopCam(){
-  const v=$('cam'); if(v.srcObject){v.srcObject.getTracks().forEach(t=>t.stop());v.srcObject=null}
-  v.style.display='none'; $('visionMedia').classList.remove('live'); $('captureBtn').style.display='none';
-  $('liveCamBtn').textContent='🎥 Включить камеру';
-}
-async function startCam(){
-  if($('camPanel').classList.contains('busy')) return;
-  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){
-    $('vision').innerHTML='<strong>Камера требует защищённую страницу.</strong><br>Откройте WALKAI через HTTPS и повторите. На текущем экране браузер показывает content://, поэтому доступ к камере и микрофону заблокирован.';
+
+  if(
+    audio ||
+    (
+      'speechSynthesis' in window &&
+      window.speechSynthesis.speaking
+    )
+  ){
+    stopAudio();
     return;
   }
-  try{
-    stopCam();
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
-    const v=$('cam'); v.srcObject=stream; v.style.display='block'; $('visionMedia').classList.add('live'); $('captureBtn').style.display='block'; $('liveCamBtn').textContent='⏹ Выключить камеру'; $('vision').textContent='Наведите камеру на объект и нажмите «Сфотографировать». ';
-  }catch(e){$('vision').innerHTML='<strong>Не удалось включить камеру.</strong><br>Разрешите доступ к камере для WALKAI в настройках браузера.'}
-}
-function capturePhoto(){
-  const v=$('cam'); if(!v.srcObject||!v.videoWidth){toast('Камера ещё не готова');return}
-  const c=document.createElement('canvas'); const max=1600; const scale=Math.min(1,max/v.videoWidth); c.width=Math.round(v.videoWidth*scale); c.height=Math.round(v.videoHeight*scale); c.getContext('2d').drawImage(v,0,0,c.width,c.height);
-  c.toBlob(blob=>{if(!blob)return; stopCam(); const f=new File([blob],'walkai-photo.jpg',{type:'image/jpeg'}); analyzeVisionFile(f)},'image/jpeg',.88);
-}
-async function photoTaken(input){const f=input.files?.[0];if(f) await analyzeVisionFile(f);input.value=''}
-async function analyzeVisionFile(file){
-  const media=$('visionMedia'); const img=$('photo');
-  media.classList.remove('live'); media.classList.add('hasPhoto'); img.src=URL.createObjectURL(file); img.style.display='block';
-  $('camPanel').classList.add('busy'); $('visionResultActions').style.display='none'; $('vision').innerHTML='<div class="visionLoading"><span class="visionDot"></span> AI анализирует фотографию…</div>';
-  const place=data[i].t;
-  try{
-    const fd=new FormData(); fd.append('image',file,'walkai-photo.jpg'); fd.append('place',place); fd.append('context',data[i].s);
-    const r=await fetch('/api/vision',{method:'POST',body:fd});
-    if(!r.ok) throw new Error(await r.text());
-    const x=await r.json();
-    visionResult={title:x.title||'Объект на фото',description:x.description||''};
-    $('vision').innerHTML='<div class="visionTitle">'+escapeHtml(visionResult.title)+'</div><div class="visionDesc">'+escapeHtml(visionResult.description)+'</div>';
-    $('visionResultActions').style.display='grid';
-  }catch(e){
-    visionResult={title:'Не удалось определить объект',description:'AI не получил результат. Проверьте соединение с сервером и OPENAI_API_KEY, затем попробуйте ещё раз.'};
-    $('vision').innerHTML='<div class="visionTitle">Не удалось определить объект</div><div class="visionDesc">'+escapeHtml(visionResult.description)+'</div>';
-  }finally{$('camPanel').classList.remove('busy')}
-}
-async function speakVision(){if(!visionResult.description)return;await speak((visionResult.title?visionResult.title+'. ':'')+visionResult.description)}
-async function visionDetail(){
-  if(!visionResult.title)return;
-  const btns=$('visionResultActions'); btns.style.opacity='.55'; btns.style.pointerEvents='none'; $('vision').innerHTML='<div class="visionTitle">'+escapeHtml(visionResult.title)+'</div><div class="visionLoading"><span class="visionDot"></span> Гид готовит подробный рассказ…</div>';
-  try{
-    const fd=new FormData(); fd.append('title',visionResult.title); fd.append('description',visionResult.description); fd.append('place',data[i].t); fd.append('context',data[i].s);
-    const r=await fetch('/api/vision-detail',{method:'POST',body:fd}); if(!r.ok)throw new Error(await r.text()); const x=await r.json();
-    visionResult.description=x.description||visionResult.description; $('vision').innerHTML='<div class="visionTitle">'+escapeHtml(visionResult.title)+'</div><div class="visionDesc">'+escapeHtml(visionResult.description)+'</div>'; await speak(visionResult.description);
-  }catch(e){toast('Не удалось получить подробный рассказ. Проверьте сервер.');}
-  finally{btns.style.opacity='1';btns.style.pointerEvents='auto'}
-}
-function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function setMicState(state){
-  const b=$('micBtn'); b.classList.remove('recording','processing');
-  if(state==='recording'){b.classList.add('recording');b.innerHTML='● <span>Слушаю…</span>';b.setAttribute('aria-label','Идёт запись вопроса')}
-  else if(state==='processing'){b.classList.add('processing');b.innerHTML='⌛ <span>Обрабатываю…</span>';b.setAttribute('aria-label','Обрабатываю вопрос')}
-  else{b.innerHTML='🎙 <span>Вопрос гиду</span>';b.setAttribute('aria-label','Вопрос гиду')}
-}
-async function startVoiceQuestion(){
-  if(recording){stopRecording();return} stopAudio();
-  if(!window.isSecureContext){toast('Микрофон заблокирован: откройте WALKAI через HTTPS. Сейчас страница запущена как content://.');return}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(SR){
-    try{const r=new SR();r.lang='ru-RU';r.interimResults=false;r.maxAlternatives=1;recorder=r;recording=true;setMicState('recording');$('voiceStatus').textContent='Слушаю… скажите вопрос';$('voiceStatus').classList.add('show');
-      r.onresult=async e=>{const text=e.results?.[0]?.[0]?.transcript||'';recording=false;setMicState('processing');if(text)await askAIText(text);else{setMicState('');toast('Не удалось распознать вопрос')}};
-      r.onerror=e=>{recording=false;setMicState('');$('voiceStatus').classList.remove('show');toast(e.error==='not-allowed'?'Разрешите микрофон для WALKAI в браузере':'Не удалось распознать речь. Попробуйте ещё раз.')};
-      r.onend=()=>{if(recording){recording=false;setMicState('');$('voiceStatus').classList.remove('show')}};r.start();return;
-    }catch(e){recording=false;setMicState('')}
-  }
-  if(!navigator.mediaDevices?.getUserMedia){toast('Браузер не даёт доступ к микрофону. Попробуйте Chrome на Android.');return}
-  try{const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'');recorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());const blob=new Blob(chunks,{type:'audio/webm'});setMicState('processing');await askAI(blob)};recorder.start();recording=true;setMicState('recording');$('voiceStatus').textContent='Слушаю… нажмите ещё раз, когда закончите';$('voiceStatus').classList.add('show')}catch(e){setMicState('');toast('Разрешите доступ к микрофону для WALKAI в настройках браузера')}
-}
-function stopRecording(){if(!recorder||!recording)return;try{if(typeof recorder.stop==='function')recorder.stop();else if(typeof recorder.abort==='function')recorder.abort()}catch(e){}recording=false;setMicState('processing')}
-async function askAIText(text){try{const fd=new FormData();fd.append('text',text);fd.append('place',data[i].t);fd.append('context',data[i].s);const r=await fetch('/api/ask-text',{method:'POST',body:fd});if(!r.ok)throw new Error(await r.text());const x=await r.json();$('voiceStatus').textContent=x.transcript?`Вы: «${x.transcript}»`:'Гид отвечает…';await speak(x.answer||'')}catch(e){toast('Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.')}setTimeout(()=>{$('voiceStatus').classList.remove('show');setMicState('')},5000)}
-async function askAI(blob){$('voiceStatus').textContent='Понимаю вопрос…';$('voiceStatus').classList.add('show');try{const fd=new FormData();fd.append('audio',blob,'question.webm');fd.append('place',data[i].t);fd.append('context',data[i].s);const r=await fetch('/api/ask',{method:'POST',body:fd});if(!r.ok)throw new Error(await r.text());const x=await r.json();$('voiceStatus').textContent=x.transcript?`Вы: «${x.transcript}»`:'Гид отвечает…';await speak(x.answer||'')}catch(e){toast('Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.')}setTimeout(()=>{$('voiceStatus').classList.remove('show');setMicState('')},5000)}
-function locate(){if(!navigator.geolocation){toast('GPS недоступен');return}navigator.geolocation.getCurrentPosition(()=>{$('gps').textContent='● GPS подключён';toast('📍 Позиция определена')},()=>toast('Разрешите доступ к геолокации'))}
-function toast(t){const old=$('toast');if(old)old.remove();const el=document.createElement('div');el.id='toast';el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),3200)}
-render();
-</script></body></html>
 
+  speak(data[i].s);
+
+}
+
+function previous(){
+
+  stopAudio();
+  stopRecording();
+
+  if(i>0){
+
+    i--;
+
+    render();
+
+    $('storyWrap')?.scrollTo({
+      top:0,
+      behavior:'smooth'
+    });
+
+  }
+
+}
+
+function next(){
+
+  stopAudio();
+  stopRecording();
+
+  if(i<7){
+
+    i++;
+
+    render();
+
+    $('storyWrap')?.scrollTo({
+      top:0,
+      behavior:'smooth'
+    });
+
+  }
+
+}
+
+
+/* =========================
+   КАМЕРА
+========================= */
+
+let visionResult={
+  title:'',
+  description:''
+};
+
+function camera(){
+
+  const p=$('camPanel');
+  const b=$('panelBackdrop');
+
+  const open=!p.classList.contains('show');
+
+  p.classList.toggle('show',open);
+  b.classList.toggle('show',open);
+
+  if(open){
+
+    resetVision();
+
+  }else{
+
+    stopCam();
+
+  }
+
+}
+
+function resetVision(){
+
+  stopCam();
+
+  visionResult={
+    title:'',
+    description:''
+  };
+
+  $('visionMedia').classList.remove(
+    'live',
+    'hasPhoto'
+  );
+
+  $('photo').style.display='none';
+  $('cam').style.display='none';
+
+  $('captureBtn').style.display='none';
+
+  $('visionResultActions').style.display='none';
+
+  $('camPanel').classList.remove('busy');
+
+  $('vision').innerHTML=
+    'Сфотографируйте объект. WALKAI определит его, покажет название и коротко расскажет о нём.';
+
+}
+
+function takePhoto(){
+
+  if(
+    $('camPanel').classList.contains('busy')
+  ){
+    return;
+  }
+
+  $('photoInput').click();
+
+}
+
+function stopCam(){
+
+  const v=$('cam');
+
+  if(v.srcObject){
+
+    v.srcObject
+      .getTracks()
+      .forEach(t=>t.stop());
+
+    v.srcObject=null;
+
+  }
+
+  v.style.display='none';
+
+  $('visionMedia').classList.remove('live');
+
+  $('captureBtn').style.display='none';
+
+  $('liveCamBtn').textContent=
+    '🎥 Включить камеру';
+
+}
+
+async function startCam(){
+
+  if(
+    $('camPanel').classList.contains('busy')
+  ){
+    return;
+  }
+
+  if(
+    !window.isSecureContext ||
+    !navigator.mediaDevices?.getUserMedia
+  ){
+
+    $('vision').innerHTML=
+      '<strong>Камера требует защищённую страницу.</strong><br>Откройте WALKAI через HTTPS и повторите.';
+
+    return;
+
+  }
+
+  try{
+
+    stopCam();
+
+    const stream=
+      await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:{
+            ideal:'environment'
+          },
+          width:{
+            ideal:1280
+          },
+          height:{
+            ideal:720
+          }
+        },
+        audio:false
+      });
+
+    const v=$('cam');
+
+    v.srcObject=stream;
+
+    v.style.display='block';
+
+    $('visionMedia').classList.add('live');
+
+    $('captureBtn').style.display='block';
+
+    $('liveCamBtn').textContent=
+      '⏹ Выключить камеру';
+
+    $('vision').textContent=
+      'Наведите камеру на объект и нажмите «Сфотографировать».';
+
+  }catch(e){
+
+    $('vision').innerHTML=
+      '<strong>Не удалось включить камеру.</strong><br>Разрешите доступ к камере для WALKAI в настройках браузера.';
+
+  }
+
+}
+
+function capturePhoto(){
+
+  const v=$('cam');
+
+  if(
+    !v.srcObject ||
+    !v.videoWidth
+  ){
+
+    toast(
+      'Камера ещё не готова'
+    );
+
+    return;
+
+  }
+
+  const c=document.createElement('canvas');
+
+  const max=1600;
+
+  const scale=Math.min(
+    1,
+    max/v.videoWidth
+  );
+
+  c.width=Math.round(
+    v.videoWidth*scale
+  );
+
+  c.height=Math.round(
+    v.videoHeight*scale
+  );
+
+  c.getContext('2d').drawImage(
+    v,
+    0,
+    0,
+    c.width,
+    c.height
+  );
+
+  c.toBlob(
+    blob=>{
+
+      if(!blob)return;
+
+      stopCam();
+
+      const f=new File(
+        [blob],
+        'walkai-photo.jpg',
+        {
+          type:'image/jpeg'
+        }
+      );
+
+      analyzeVisionFile(f);
+
+    },
+    'image/jpeg',
+    .88
+  );
+
+}
+
+async function photoTaken(input){
+
+  const f=input.files?.[0];
+
+  if(f){
+    await analyzeVisionFile(f);
+  }
+
+  input.value='';
+
+}
+
+async function analyzeVisionFile(file){
+
+  const media=$('visionMedia');
+  const img=$('photo');
+
+  media.classList.remove('live');
+  media.classList.add('hasPhoto');
+
+  img.src=URL.createObjectURL(file);
+  img.style.display='block';
+
+  $('camPanel').classList.add('busy');
+
+  $('visionResultActions').style.display='none';
+
+  $('vision').innerHTML=
+    '<div class="visionLoading"><span class="visionDot"></span> AI анализирует фотографию…</div>';
+
+  const place=data[i].t;
+
+  try{
+
+    const fd=new FormData();
+
+    fd.append(
+      'image',
+      file,
+      'walkai-photo.jpg'
+    );
+
+    fd.append(
+      'place',
+      place
+    );
+
+    fd.append(
+      'context',
+      data[i].s
+    );
+
+    const r=await fetch(
+      '/api/vision',
+      {
+        method:'POST',
+        body:fd
+      }
+    );
+
+    if(!r.ok){
+      throw new Error(
+        await r.text()
+      );
+    }
+
+    const x=await r.json();
+
+    visionResult={
+      title:x.title ||
+        'Объект на фото',
+
+      description:x.description ||
+        ''
+    };
+
+    $('vision').innerHTML=
+      '<div class="visionTitle">'+
+      escapeHtml(
+        visionResult.title
+      )+
+      '</div>'+
+      '<div class="visionDesc">'+
+      escapeHtml(
+        visionResult.description
+      )+
+      '</div>';
+
+    $('visionResultActions').style.display=
+      'grid';
+
+  }catch(e){
+
+    visionResult={
+      title:
+        'Не удалось определить объект',
+
+      description:
+        'AI не получил результат. Проверьте соединение с сервером и OPENAI_API_KEY, затем попробуйте ещё раз.'
+    };
+
+    $('vision').innerHTML=
+      '<div class="visionTitle">Не удалось определить объект</div>'+
+      '<div class="visionDesc">'+
+      escapeHtml(
+        visionResult.description
+      )+
+      '</div>';
+
+  }finally{
+
+    $('camPanel').classList.remove(
+      'busy'
+    );
+
+  }
+
+}
+
+async function speakVision(){
+
+  if(
+    !visionResult.description
+  ){
+    return;
+  }
+
+  await speak(
+    (
+      visionResult.title
+      ?
+      visionResult.title+'. '
+      :
+      ''
+    )+
+    visionResult.description
+  );
+
+}
+
+async function visionDetail(){
+
+  if(
+    !visionResult.title
+  ){
+    return;
+  }
+
+  const btns=
+    $('visionResultActions');
+
+  btns.style.opacity='.55';
+  btns.style.pointerEvents='none';
+
+  $('vision').innerHTML=
+    '<div class="visionTitle">'+
+    escapeHtml(
+      visionResult.title
+    )+
+    '</div>'+
+    '<div class="visionLoading"><span class="visionDot"></span> Гид готовит подробный рассказ…</div>';
+
+  try{
+
+    const fd=new FormData();
+
+    fd.append(
+      'title',
+      visionResult.title
+    );
+
+    fd.append(
+      'description',
+      visionResult.description
+    );
+
+    fd.append(
+      'place',
+      data[i].t
+    );
+
+    fd.append(
+      'context',
+      data[i].s
+    );
+
+    const r=await fetch(
+      '/api/vision-detail',
+      {
+        method:'POST',
+        body:fd
+      }
+    );
+
+    if(!r.ok){
+      throw new Error(
+        await r.text()
+      );
+    }
+
+    const x=await r.json();
+
+    visionResult.description=
+      x.description ||
+      visionResult.description;
+
+    $('vision').innerHTML=
+      '<div class="visionTitle">'+
+      escapeHtml(
+        visionResult.title
+      )+
+      '</div>'+
+      '<div class="visionDesc">'+
+      escapeHtml(
+        visionResult.description
+      )+
+      '</div>';
+
+    await speak(
+      visionResult.description
+    );
+
+  }catch(e){
+
+    toast(
+      'Не удалось получить подробный рассказ. Проверьте сервер.'
+    );
+
+  }finally{
+
+    btns.style.opacity='1';
+    btns.style.pointerEvents='auto';
+
+  }
+
+}
+
+function escapeHtml(v){
+
+  return String(
+    v??''
+  ).replace(
+    /[&<>"']/g,
+    m=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#039;'
+    }[m])
+  );
+
+}
+
+
+/* =========================
+   МИКРОФОН
+========================= */
+
+function setMicState(state){
+
+  const b=$('micBtn');
+
+  b.classList.remove(
+    'recording',
+    'processing'
+  );
+
+  if(state==='recording'){
+
+    b.classList.add('recording');
+
+    b.innerHTML=
+      '● <span>Слушаю…</span>';
+
+    b.setAttribute(
+      'aria-label',
+      'Идёт запись вопроса'
+    );
+
+  }else if(state==='processing'){
+
+    b.classList.add('processing');
+
+    b.innerHTML=
+      '⌛ <span>Обрабатываю…</span>';
+
+    b.setAttribute(
+      'aria-label',
+      'Обрабатываю вопрос'
+    );
+
+  }else{
+
+    b.innerHTML=
+      '🎙 <span>Вопрос гиду</span>';
+
+    b.setAttribute(
+      'aria-label',
+      'Вопрос гиду'
+    );
+
+  }
+
+}
+
+async function startVoiceQuestion(){
+
+  if(recording){
+
+    voiceCancelled=true;
+
+    stopRecording();
+
+    setMicState('');
+
+    $('voiceStatus')
+      .classList.remove('show');
+
+    toast(
+      'Вопрос отменён'
+    );
+
+    return;
+
+  }
+
+  stopAudio();
+
+  voiceCancelled=false;
+
+  if(!window.isSecureContext){
+
+    toast(
+      'Микрофон работает только через HTTPS.'
+    );
+
+    return;
+
+  }
+
+  const SR=
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if(SR){
+
+    try{
+
+      const r=new SR();
+
+      r.lang='ru-RU';
+
+      r.interimResults=false;
+
+      r.maxAlternatives=1;
+
+      recorder=r;
+
+      recording=true;
+
+      setMicState(
+        'recording'
+      );
+
+      r.onresult=async e=>{
+
+        if(voiceCancelled){
+          return;
+        }
+
+        const text=
+          e.results?.[0]?.[0]
+            ?.transcript ||
+          '';
+
+        recording=false;
+
+        if(!text){
+
+          setMicState('');
+
+          return;
+
+        }
+
+        setMicState(
+          'processing'
+        );
+
+        await askAIText(text);
+
+      };
+
+      r.onerror=e=>{
+
+        recording=false;
+
+        setMicState('');
+
+        if(
+          e.error!=='aborted'
+        ){
+
+          toast(
+            e.error==='not-allowed'
+            ?
+            'Разрешите микрофон для WALKAI в браузере.'
+            :
+            'Не удалось распознать вопрос'
+          );
+
+        }
+
+      };
+
+      r.onend=()=>{
+
+        if(recording){
+
+          recording=false;
+
+          if(!voiceCancelled){
+            setMicState('');
+          }
+
+        }
+
+      };
+
+      r.start();
+
+      return;
+
+    }catch(e){
+
+      recording=false;
+
+      setMicState('');
+
+    }
+
+  }
+
+  if(
+    !navigator.mediaDevices?.getUserMedia
+  ){
+
+    toast(
+      'Браузер не даёт доступ к микрофону. Попробуйте Chrome на Android.'
+    );
+
+    return;
+
+  }
+
+  try{
+
+    const stream=
+      await navigator.mediaDevices.getUserMedia({
+        audio:{
+          echoCancellation:true,
+          noiseSuppression:true,
+          autoGainControl:true
+        }
+      });
+
+    chunks=[];
+
+    const mime=
+      MediaRecorder.isTypeSupported(
+        'audio/webm;codecs=opus'
+      )
+      ?
+      'audio/webm;codecs=opus'
+      :
+      'audio/webm';
+
+    recorder=
+      new MediaRecorder(
+        stream,
+        {
+          mimeType:mime
+        }
+      );
+
+    recording=true;
+
+    voiceCancelled=false;
+
+    setMicState(
+      'recording'
+    );
+
+    recorder.ondataavailable=e=>{
+
+      if(e.data.size){
+        chunks.push(e.data);
+      }
+
+    };
+
+    recorder.onstop=async()=>{
+
+      stream
+        .getTracks()
+        .forEach(
+          t=>t.stop()
+        );
+
+      if(voiceCancelled){
+
+        chunks=[];
+
+        setMicState('');
+
+        return;
+
+      }
+
+      const blob=
+        new Blob(
+          chunks,
+          {
+            type:mime
+          }
+        );
+
+      setMicState(
+        'processing'
+      );
+
+      await askAI(blob);
+
+      setMicState('');
+
+    };
+
+    recorder.start();
+
+  }catch(e){
+
+    recording=false;
+
+    setMicState('');
+
+    toast(
+      'Не удалось включить микрофон'
+    );
+
+  }
+
+}
+
+function stopRecording(){
+
+  if(
+    !recorder ||
+    !recording
+  ){
+    return;
+  }
+
+  try{
+
+    if(
+      typeof recorder.stop==='function'
+    ){
+
+      recorder.stop();
+
+    }else if(
+      typeof recorder.abort==='function'
+    ){
+
+      recorder.abort();
+
+    }
+
+  }catch(e){}
+
+  recording=false;
+
+}
+
+async function askAIText(text){
+
+  setMicState(
+    'processing'
+  );
+
+  try{
+
+    const fd=new FormData();
+
+    fd.append(
+      'text',
+      text
+    );
+
+    fd.append(
+      'place',
+      data[i].t
+    );
+
+    fd.append(
+      'context',
+      data[i].s
+    );
+
+    const r=await fetch(
+      '/api/ask-text',
+      {
+        method:'POST',
+        body:fd
+      }
+    );
+
+    if(!r.ok){
+
+      throw new Error(
+        await r.text()
+      );
+
+    }
+
+    const x=await r.json();
+
+    await speak(
+      x.answer||''
+    );
+
+  }catch(e){
+
+    toast(
+      'Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.'
+    );
+
+  }finally{
+
+    setMicState('');
+
+  }
+
+}
+
+async function askAI(blob){
+
+  setMicState(
+    'processing'
+  );
+
+  try{
+
+    const fd=new FormData();
+
+    fd.append(
+      'audio',
+      blob,
+      'question.webm'
+    );
+
+    fd.append(
+      'place',
+      data[i].t
+    );
+
+    fd.append(
+      'context',
+      data[i].s
+    );
+
+    const r=await fetch(
+      '/api/ask',
+      {
+        method:'POST',
+        body:fd
+      }
+    );
+
+    if(!r.ok){
+
+      throw new Error(
+        await r.text()
+      );
+
+    }
+
+    const x=await r.json();
+
+    await speak(
+      x.answer||''
+    );
+
+  }catch(e){
+
+    toast(
+      'Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.'
+    );
+
+  }finally{
+
+    setMicState('');
+
+  }
+
+}
+
+
+/* =========================
+   GPS
+========================= */
+
+function locate(){
+
+  if(
+    !navigator.geolocation
+  ){
+
+    toast(
+      'GPS недоступен'
+    );
+
+    return;
+
+  }
+
+  navigator.geolocation.getCurrentPosition(
+
+    ()=>{
+
+      $('gps').textContent=
+        '● GPS подключён';
+
+      toast(
+        '📍 Позиция определена'
+      );
+
+    },
+
+    ()=>{
+
+      toast(
+        'Разрешите доступ к геолокации'
+      );
+
+    }
+
+  );
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+function toast(t){
+
+  const old=$('toast');
+
+  if(old){
+    old.remove();
+  }
+
+  const el=
+    document.createElement('div');
+
+  el.id='toast';
+
+  el.className='toast';
+
+  el.textContent=t;
+
+  document.body.appendChild(el);
+
+  setTimeout(
+    ()=>el.remove(),
+    3200
+  );
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
