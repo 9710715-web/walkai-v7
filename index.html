@@ -338,19 +338,7 @@ header{
   background:#eeeae2;
   color:#151515;
   font-weight:900;
-  font-size:12px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  line-height:1.1
-}
-.cameraBtn .sub{
-  display:block;
-  font-size:9px;
-  font-weight:500;
-  opacity:.65;
-  margin-top:3px
+  font-size:12px
 }
 
 /* ВАЖНО:
@@ -508,7 +496,12 @@ header{
   }
 }
 
-.visionActions{display:none}
+.visionActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px
+}
 
 .visionBtn{
   height:58px;
@@ -526,6 +519,20 @@ header{
   color:#fff
 }
 
+.visionResultActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px
+}
+
+.visionResultActions button{
+  height:50px;
+  border:0;
+  border-radius:12px;
+  font-weight:900;
+  font-size:12px
+}
 
 .visionResultActions .speakBtn{
   background:#111;
@@ -537,6 +544,23 @@ header{
   color:#111
 }
 
+.captureBtn{
+  display:none;
+  width:100%;
+  height:52px;
+  margin-top:8px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+  font-weight:900;
+  font-size:13px
+}
+
+.panel.busy .visionActions{
+  opacity:.55;
+  pointer-events:none
+}
 
 .panel img#photo{
   display:none;
@@ -747,10 +771,9 @@ header{
 
     <button
       class="cameraBtn"
-      onclick="openVisionPhoto()"
+      onclick="camera()"
     >
       📷 Что я вижу?
-      <span class="sub">Сделать фото</span>
     </button>
 
   </div>
@@ -813,6 +836,54 @@ header{
     покажет название и коротко расскажет о нём.
   </div>
 
+  <div class="visionActions">
+
+    <button
+      class="visionBtn"
+      onclick="takePhoto()"
+    >
+      📸 Сделать фото
+    </button>
+
+    <button
+      class="visionBtn"
+      id="liveCamBtn"
+      onclick="startCam()"
+    >
+      🎥 Включить камеру
+    </button>
+
+  </div>
+
+  <button
+    class="captureBtn"
+    id="captureBtn"
+    onclick="capturePhoto()"
+  >
+    📸 Сфотографировать
+  </button>
+
+  <div
+    class="visionResultActions"
+    id="visionResultActions"
+    style="display:none"
+  >
+
+    <button
+      class="speakBtn"
+      onclick="speakVision()"
+    >
+      🔊 Озвучить
+    </button>
+
+    <button
+      class="detailBtn"
+      onclick="visionDetail()"
+    >
+      ✨ Рассказать подробнее
+    </button>
+
+  </div>
 
 </div>
 
@@ -880,14 +951,10 @@ const data=[
 
 let i=0;
 let audio=null;
-let storyPosition=0;
-let storyWasPlaying=false;
-let storyStage=-1;
 let recording=false;
 let recorder=null;
 let chunks=[];
 let voiceCancelled=false;
-let answerAudio=null;
 
 const $=id=>document.getElementById(id);
 
@@ -903,10 +970,6 @@ function render(){
 }
 
 function stopAudio(){
-  if(answerAudio){
-    answerAudio.pause();
-    answerAudio=null;
-  }
 
   if(audio){
     audio.pause();
@@ -914,30 +977,35 @@ function stopAudio(){
     audio=null;
   }
 
-  storyPosition=0;
-  storyWasPlaying=false;
-  storyStage=-1;
-
   if('speechSynthesis' in window){
     window.speechSynthesis.cancel();
   }
 
   $('listen').classList.remove('speaking');
-  $('listen').innerHTML='▶ Слушать гида<span class="sub">Естественный AI-голос</span>';
+
+  $('listen').innerHTML=
+    '▶ Слушать гида<span class="sub">Естественный AI-голос</span>';
+
 }
 
 async function speak(text){
+
   stopAudio();
 
-  $('listen').innerHTML='• Гид говорит...<span class="sub">Один тап — остановить</span>';
+  $('listen').innerHTML=
+    '● Гид говорит…<span class="sub">Один тап — остановить</span>';
+
   $('listen').classList.add('speaking');
 
   try{
+
     const r=await fetch(
       '/api/tts',
       {
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:{
+          'Content-Type':'application/json'
+        },
         body:JSON.stringify({text})
       }
     );
@@ -952,17 +1020,10 @@ async function speak(text){
       URL.createObjectURL(blob)
     );
 
-    storyAudioSrc=audio.src;
-
-    audio.onended=()=>{
-      storyAudioSrc='';
-      storyPosition=0;
-      storyWasPlaying=false;
-      stopAudio();
-    };
+    audio.onended=()=>stopAudio();
 
     audio.onerror=()=>{
-      throw new Error('audio');
+      throw new Error('audio')
     };
 
     await audio.play();
@@ -977,14 +1038,11 @@ async function speak(text){
       u.rate=.96;
       u.pitch=1;
 
-      u.onend=()=>{
-        storyPosition=0;
-        storyWasPlaying=false;
-        stopAudio();
-      };
+      u.onend=()=>stopAudio();
 
       u.onerror=()=>{
         stopAudio();
+        toast('Не удалось включить звук')
       };
 
       window.speechSynthesis.cancel();
@@ -993,25 +1051,32 @@ async function speak(text){
     }else{
 
       stopAudio();
-      toast('В этом браузере нет поддержки озвучки');
+
+      toast(
+        'В этом браузере нет поддержки озвучки'
+      );
 
     }
+
   }
+
 }
+
 function listenStory(){
-  if(answerAudio){
-    return;
-  }
 
   if(
     audio ||
-    ('speechSynthesis' in window && window.speechSynthesis.speaking)
+    (
+      'speechSynthesis' in window &&
+      window.speechSynthesis.speaking
+    )
   ){
     stopAudio();
     return;
   }
 
   speak(data[i].s);
+
 }
 
 function previous(){
@@ -1064,34 +1129,26 @@ let visionResult={
   description:''
 };
 
-function camera(forceOpen=false){
+function camera(){
 
   const p=$('camPanel');
   const b=$('panelBackdrop');
 
-  const open=forceOpen ? true : !p.classList.contains('show');
+  const open=!p.classList.contains('show');
 
   p.classList.toggle('show',open);
   b.classList.toggle('show',open);
 
   if(open){
-    stopAudio();
+
     resetVision();
+
   }else{
+
     stopCam();
-    stopAudio();
+
   }
 
-}
-
-function openVisionPhoto(){
-  if($('camPanel').classList.contains('busy'))return;
-  camera(true);
-  setTimeout(()=>{
-    if(!$('camPanel').classList.contains('busy')){
-      $('photoInput').click();
-    }
-  },120);
 }
 
 function resetVision(){
@@ -1111,10 +1168,182 @@ function resetVision(){
   $('photo').style.display='none';
   $('cam').style.display='none';
 
-    $('camPanel').classList.remove('busy');
+  $('captureBtn').style.display='none';
+
+  $('visionResultActions').style.display='none';
+
+  $('camPanel').classList.remove('busy');
 
   $('vision').innerHTML=
-    'Нажмите «Сделать фото». WALKAI определит объект, покажет название и автоматически расскажет о нём.';
+    'Сфотографируйте объект. WALKAI определит его, покажет название и коротко расскажет о нём.';
+
+}
+
+function takePhoto(){
+
+  if(
+    $('camPanel').classList.contains('busy')
+  ){
+    return;
+  }
+
+  $('photoInput').click();
+
+}
+
+function stopCam(){
+
+  const v=$('cam');
+
+  if(v.srcObject){
+
+    v.srcObject
+      .getTracks()
+      .forEach(t=>t.stop());
+
+    v.srcObject=null;
+
+  }
+
+  v.style.display='none';
+
+  $('visionMedia').classList.remove('live');
+
+  $('captureBtn').style.display='none';
+
+  $('liveCamBtn').textContent=
+    '🎥 Включить камеру';
+
+}
+
+async function startCam(){
+
+  if(
+    $('camPanel').classList.contains('busy')
+  ){
+    return;
+  }
+
+  if(
+    !window.isSecureContext ||
+    !navigator.mediaDevices?.getUserMedia
+  ){
+
+    $('vision').innerHTML=
+      '<strong>Камера требует защищённую страницу.</strong><br>Откройте WALKAI через HTTPS и повторите.';
+
+    return;
+
+  }
+
+  try{
+
+    stopCam();
+
+    const stream=
+      await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:{
+            ideal:'environment'
+          },
+          width:{
+            ideal:1280
+          },
+          height:{
+            ideal:720
+          }
+        },
+        audio:false
+      });
+
+    const v=$('cam');
+
+    v.srcObject=stream;
+
+    v.style.display='block';
+
+    $('visionMedia').classList.add('live');
+
+    $('captureBtn').style.display='block';
+
+    $('liveCamBtn').textContent=
+      '⏹ Выключить камеру';
+
+    $('vision').textContent=
+      'Наведите камеру на объект и нажмите «Сфотографировать».';
+
+  }catch(e){
+
+    $('vision').innerHTML=
+      '<strong>Не удалось включить камеру.</strong><br>Разрешите доступ к камере для WALKAI в настройках браузера.';
+
+  }
+
+}
+
+function capturePhoto(){
+
+  const v=$('cam');
+
+  if(
+    !v.srcObject ||
+    !v.videoWidth
+  ){
+
+    toast(
+      'Камера ещё не готова'
+    );
+
+    return;
+
+  }
+
+  const c=document.createElement('canvas');
+
+  const max=1600;
+
+  const scale=Math.min(
+    1,
+    max/v.videoWidth
+  );
+
+  c.width=Math.round(
+    v.videoWidth*scale
+  );
+
+  c.height=Math.round(
+    v.videoHeight*scale
+  );
+
+  c.getContext('2d').drawImage(
+    v,
+    0,
+    0,
+    c.width,
+    c.height
+  );
+
+  c.toBlob(
+    blob=>{
+
+      if(!blob)return;
+
+      stopCam();
+
+      const f=new File(
+        [blob],
+        'walkai-photo.jpg',
+        {
+          type:'image/jpeg'
+        }
+      );
+
+      analyzeVisionFile(f);
+
+    },
+    'image/jpeg',
+    .88
+  );
 
 }
 
@@ -1142,6 +1371,8 @@ async function analyzeVisionFile(file){
   img.style.display='block';
 
   $('camPanel').classList.add('busy');
+
+  $('visionResultActions').style.display='none';
 
   $('vision').innerHTML=
     '<div class="visionLoading"><span class="visionDot"></span> AI анализирует фотографию…</div>';
@@ -1204,7 +1435,8 @@ async function analyzeVisionFile(file){
       )+
       '</div>';
 
-    await speakVision();
+    $('visionResultActions').style.display=
+      'grid';
 
   }catch(e){
 
@@ -1252,6 +1484,103 @@ async function speakVision(){
     )+
     visionResult.description
   );
+
+}
+
+async function visionDetail(){
+
+  if(
+    !visionResult.title
+  ){
+    return;
+  }
+
+  const btns=
+    $('visionResultActions');
+
+  btns.style.opacity='.55';
+  btns.style.pointerEvents='none';
+
+  $('vision').innerHTML=
+    '<div class="visionTitle">'+
+    escapeHtml(
+      visionResult.title
+    )+
+    '</div>'+
+    '<div class="visionLoading"><span class="visionDot"></span> Гид готовит подробный рассказ…</div>';
+
+  try{
+
+    const fd=new FormData();
+
+    fd.append(
+      'title',
+      visionResult.title
+    );
+
+    fd.append(
+      'description',
+      visionResult.description
+    );
+
+    fd.append(
+      'place',
+      data[i].t
+    );
+
+    fd.append(
+      'context',
+      data[i].s
+    );
+
+    const r=await fetch(
+      '/api/vision-detail',
+      {
+        method:'POST',
+        body:fd
+      }
+    );
+
+    if(!r.ok){
+      throw new Error(
+        await r.text()
+      );
+    }
+
+    const x=await r.json();
+
+    visionResult.description=
+      x.description ||
+      visionResult.description;
+
+    $('vision').innerHTML=
+      '<div class="visionTitle">'+
+      escapeHtml(
+        visionResult.title
+      )+
+      '</div>'+
+      '<div class="visionDesc">'+
+      escapeHtml(
+        visionResult.description
+      )+
+      '</div>';
+
+    await speak(
+      visionResult.description
+    );
+
+  }catch(e){
+
+    toast(
+      'Не удалось получить подробный рассказ. Проверьте сервер.'
+    );
+
+  }finally{
+
+    btns.style.opacity='1';
+    btns.style.pointerEvents='auto';
+
+  }
 
 }
 
@@ -1323,6 +1652,7 @@ function setMicState(state){
   }
 
 }
+
 async function startVoiceQuestion(){
 
   if(recording){
@@ -1344,6 +1674,10 @@ async function startVoiceQuestion(){
 
   }
 
+  stopAudio();
+
+  voiceCancelled=false;
+
   if(!window.isSecureContext){
 
     toast(
@@ -1351,11 +1685,8 @@ async function startVoiceQuestion(){
     );
 
     return;
+
   }
-
-  pauseStoryForQuestion();
-
-  voiceCancelled=false;
 
   const SR=
     window.SpeechRecognition ||
@@ -1397,7 +1728,7 @@ async function startVoiceQuestion(){
         if(!text){
 
           setMicState('');
-          resumeStoryAfterQuestion();
+
           return;
 
         }
@@ -1429,8 +1760,6 @@ async function startVoiceQuestion(){
           );
 
         }
-
-        resumeStoryAfterQuestion();
 
       };
 
@@ -1568,91 +1897,8 @@ async function startVoiceQuestion(){
       'Не удалось включить микрофон'
     );
 
-    resumeStoryAfterQuestion();
-
   }
 
-}
-function pauseStoryForQuestion(){
-  if(audio && !audio.paused){
-    storyPosition=audio.currentTime||0;
-    storyWasPlaying=true;
-    storyStage=i;
-    audio.pause();
-  }else{
-    storyWasPlaying=false;
-    storyStage=-1;
-  }
-}
-
-async function resumeStoryAfterQuestion(){
-  if(!storyWasPlaying || storyStage!==i || !audio)return;
-
-  const pos=storyPosition||0;
-
-  storyWasPlaying=false;
-  storyStage=-1;
-  storyPosition=0;
-
-  try{
-    audio.currentTime=pos;
-    $('listen').innerHTML='• Гид говорит...<span class="sub">Один тап — остановить</span>';
-    $('listen').classList.add('speaking');
-    await audio.play();
-  }catch(e){
-    stopAudio();
-  }
-}
-
-async function speakAnswer(text){
-  if(!text){
-    resumeStoryAfterQuestion();
-    return;
-  }
-
-  if(answerAudio){
-    try{answerAudio.pause()}catch(e){}
-    answerAudio=null;
-  }
-
-  try{
-    const r=await fetch('/api/tts',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text})
-    });
-
-    if(!r.ok)throw new Error('TTS '+r.status);
-
-    const blob=await r.blob();
-    answerAudio=new Audio(URL.createObjectURL(blob));
-
-    answerAudio.onended=()=>{
-      answerAudio=null;
-      resumeStoryAfterQuestion();
-    };
-
-    answerAudio.onerror=()=>{
-      answerAudio=null;
-      resumeStoryAfterQuestion();
-    };
-
-    await answerAudio.play();
-
-  }catch(e){
-    if('speechSynthesis' in window){
-      const u=new SpeechSynthesisUtterance(text);
-      u.lang='ru-RU';
-      u.rate=.96;
-      u.pitch=1;
-      u.onend=()=>resumeStoryAfterQuestion();
-      u.onerror=()=>resumeStoryAfterQuestion();
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(u);
-    }else{
-      resumeStoryAfterQuestion();
-    }
-  }
 }
 
 function stopRecording(){
@@ -1729,7 +1975,7 @@ async function askAIText(text){
 
     const x=await r.json();
 
-    await speakAnswer(
+    await speak(
       x.answer||''
     );
 
@@ -1738,8 +1984,6 @@ async function askAIText(text){
     toast(
       'Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.'
     );
-
-    resumeStoryAfterQuestion();
 
   }finally{
 
@@ -1793,7 +2037,7 @@ async function askAI(blob){
 
     const x=await r.json();
 
-    await speakAnswer(
+    await speak(
       x.answer||''
     );
 
@@ -1802,8 +2046,6 @@ async function askAI(blob){
     toast(
       'Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.'
     );
-
-    resumeStoryAfterQuestion();
 
   }finally{
 
