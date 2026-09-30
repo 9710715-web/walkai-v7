@@ -1295,7 +1295,135 @@ header{
 .panel.show.photoResult .captureBtn{
   display:none !important;
 }
-\n\n/* WALKAI V7 — новое управление маршрутом и профессиональная перемотка */\n.menuBtn{\n  height:38px;\n  min-width:96px;\n  padding:0 13px;\n  border:1px solid #ffffff2b;\n  border-radius:20px;\n  background:#222;\n  color:#fff;\n  font-size:12px;\n  font-weight:900;\n  display:flex;\n  align-items:center;\n  justify-content:center;\n  gap:7px;\n  box-shadow:0 3px 12px #0004;\n}\n.menuBtn:active,.routeMenuClose:active,.routeItem:active,.stopArrow:active{transform:scale(.97)}\n\n.routeMenu{\n  position:fixed;\n  left:50%;\n  top:58px;\n  width:min(430px,100vw);\n  max-height:calc(100dvh - 58px);\n  overflow:auto;\n  transform:translate(-50%,-12px);\n  opacity:0;\n  visibility:hidden;\n  pointer-events:none;\n  z-index:35;\n  padding:14px;\n  background:#f4f1eb;\n  border-radius:0 0 24px 24px;\n  box-shadow:0 14px 32px #0005;\n  transition:opacity .18s ease,transform .18s ease,visibility .18s ease;\n}\n.routeMenu.show{\n  opacity:1;\n  visibility:visible;\n  pointer-events:auto;\n  transform:translate(-50%,0);\n}\n.routeMenuHead{\n  display:flex;\n  align-items:center;\n  justify-content:space-between;\n  margin-bottom:12px;\n}\n.routeMenuTitle{font-size:20px;font-weight:900}\n.routeMenuSub{margin-top:2px;color:#85817a;font-size:11px;font-weight:700}\n.routeMenuClose{\n  width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#111;font-size:25px;line-height:1;box-shadow:0 3px 12px #0002;\n}\n.routeItem{\n  width:100%;\n  min-height:70px;\n  border:0;\n  border-radius:16px;\n  background:#fff;\n  display:grid;\n  grid-template-columns:40px minmax(0,1fr) 24px;\n  align-items:center;\n  gap:8px;\n  padding:10px 12px;\n  text-align:left;\n  box-shadow:0 3px 12px #00012;\n}\n.routeItemIcon{font-size:20px;text-align:center}\n.routeItemText{display:flex;flex-direction:column;gap:4px}\n.routeItemText strong{font-size:12px;font-weight:900}\n.routeItemText small{font-size:10px;color:#777;font-weight:700}\n.routeCheck{font-size:18px;font-weight:900}\n.routeComing{padding:14px 4px 4px;text-align:center;color:#8a867f;font-size:10px;font-weight:700}\n\n.stopTitleNav{\n  display:grid;\n  grid-template-columns:42px minmax(0,1fr) 42px;\n  align-items:center;\n  gap:7px;\n}\n.stopTitleNav h1{\n  min-width:0;\n  margin:3px 0 0;\n  text-align:center;\n}\n.stopArrow{\n  width:42px;\n  height:42px;\n  border:0;\n  border-radius:50%;\n  background:#eeeae2;\n  color:#111;\n  font-size:32px;\n  font-weight:500;\n  line-height:1;\n  display:flex;\n  align-items:center;\n  justify-content:center;\n  box-shadow:0 2px 8px #00012;\n}\n.stopArrow:disabled{opacity:.3}\n\n.seekBtn{\n  cursor:pointer;\n  touch-action:none;\n  user-select:none;\n  -webkit-user-select:none;\n  -webkit-touch-callout:none;\n  transition:transform .08s ease,background .15s ease;\n}\n.seekBtn.holding{\n  background:#ddd7cc;\n  transform:scale(.97);\n}\n.seekIcon{font-size:23px;line-height:1}\n.seekMain{font-size:11px;font-weight:900;line-height:1}\n.seekBtn .navHint{font-size:7.5px;line-height:1.05;text-align:center}\n\n@media(max-width:430px){\n  .stopTitleNav{grid-template-columns:40px minmax(0,1fr) 40px;gap:6px}\n  .stopArrow{width:40px;height:40px;font-size:30px}\n  .playerNav{grid-template-columns:84px minmax(0,1fr) 84px;gap:6px}\n  .seekMain{font-size:10px}\n  .seekBtn .navHint{font-size:7px}\n}\n</style>
+
+
+/* WALKAI V7 — новое управление маршрутом и профессиональная перемотка */
+.menuBtn{
+  height:38px;
+  min-width:96px;
+  padding:0 13px;
+  border:1px solid #ffffff2b;
+  border-radius:20px;
+  background:#222;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-shadow:0 3px 12px #0004;
+}
+.menuBtn:active,.routeMenuClose:active,.routeItem:active,.stopArrow:active{transform:scale(.97)}
+
+.routeMenu{
+  position:fixed;
+  left:50%;
+  top:58px;
+  width:min(430px,100vw);
+  max-height:calc(100dvh - 58px);
+  overflow:auto;
+  transform:translate(-50%,-12px);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  z-index:35;
+  padding:14px;
+  background:#f4f1eb;
+  border-radius:0 0 24px 24px;
+  box-shadow:0 14px 32px #0005;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+}
+.routeMenu.show{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translate(-50%,0);
+}
+.routeMenuHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+.routeMenuTitle{font-size:20px;font-weight:900}
+.routeMenuSub{margin-top:2px;color:#85817a;font-size:11px;font-weight:700}
+.routeMenuClose{
+  width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#111;font-size:25px;line-height:1;box-shadow:0 3px 12px #0002;
+}
+.routeItem{
+  width:100%;
+  min-height:70px;
+  border:0;
+  border-radius:16px;
+  background:#fff;
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr) 24px;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  text-align:left;
+  box-shadow:0 3px 12px #00012;
+}
+.routeItemIcon{font-size:20px;text-align:center}
+.routeItemText{display:flex;flex-direction:column;gap:4px}
+.routeItemText strong{font-size:12px;font-weight:900}
+.routeItemText small{font-size:10px;color:#777;font-weight:700}
+.routeCheck{font-size:18px;font-weight:900}
+.routeComing{padding:14px 4px 4px;text-align:center;color:#8a867f;font-size:10px;font-weight:700}
+
+.stopTitleNav{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 42px;
+  align-items:center;
+  gap:7px;
+}
+.stopTitleNav h1{
+  min-width:0;
+  margin:3px 0 0;
+  text-align:center;
+}
+.stopArrow{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#eeeae2;
+  color:#111;
+  font-size:32px;
+  font-weight:500;
+  line-height:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 8px #00012;
+}
+.stopArrow:disabled{opacity:.3}
+
+.seekBtn{
+  cursor:pointer;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  transition:transform .08s ease,background .15s ease;
+}
+.seekBtn.holding{
+  background:#ddd7cc;
+  transform:scale(.97);
+}
+.seekIcon{font-size:23px;line-height:1}
+.seekMain{font-size:11px;font-weight:900;line-height:1}
+.seekBtn .navHint{font-size:7.5px;line-height:1.05;text-align:center}
+
+@media(max-width:430px){
+  .stopTitleNav{grid-template-columns:40px minmax(0,1fr) 40px;gap:6px}
+  .stopArrow{width:40px;height:40px;font-size:30px}
+  .playerNav{grid-template-columns:84px minmax(0,1fr) 84px;gap:6px}
+  .seekMain{font-size:10px}
+  .seekBtn .navHint{font-size:7px}
+}
+</style>
 
 </head>
 
