@@ -1043,34 +1043,57 @@ function resumeStoryAfterQuestion(){
 
   }
 
+  const resumeAudio=audio;
+  const resumeIndex=storyResumeIndex;
   const pos=storyResumeTime;
 
   storyResumeActive=false;
   storyResumeIndex=-1;
   storyResumeTime=0;
 
-  try{
+  // audio уже стоит ровно на месте паузы. Повторный currentTime=...
+  // здесь не нужен: он заставляет браузер заново делать seek и даёт
+  // заметную длинную паузу перед продолжением.
+  $('listen').innerHTML=
+    '● Ответ закончен <span class="sub">Продолжаем маршрут…</span>';
 
-    audio.currentTime=pos;
+  $('listen').classList.add('speaking');
 
-    $('listen').innerHTML=
-      '● Гид говорит…<span class="sub">Продолжение</span>';
+  // Небольшая пауза отделяет ответ на вопрос от продолжения рассказа.
+  window.setTimeout(()=>{
 
-    $('listen').classList.add('speaking');
-
-    const playPromise=audio.play();
-
-    if(playPromise?.catch){
-      playPromise.catch(()=>{
-        stopAudio();
-      });
+    if(
+      audio!==resumeAudio ||
+      i!==resumeIndex
+    ){
+      return;
     }
 
-  }catch(e){
+    try{
 
-    stopAudio();
+      // Восстанавливаем позицию только если браузер почему-то её изменил.
+      if(
+        Number.isFinite(pos) &&
+        Math.abs((resumeAudio.currentTime||0)-pos)>.05
+      ){
+        resumeAudio.currentTime=pos;
+      }
 
-  }
+      const playPromise=resumeAudio.play();
+
+      if(playPromise?.catch){
+        playPromise.catch(()=>{
+          stopAudio();
+        });
+      }
+
+    }catch(e){
+
+      stopAudio();
+
+    }
+
+  },350);
 
 }
 
