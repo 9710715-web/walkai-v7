@@ -952,6 +952,12 @@ const data=[
 let i=0;
 let audio=null;
 let answerAudio=null;
+
+// Предзагрузка первого рассказа: пока пользователь видит экран,
+// браузер заранее получает аудио, чтобы после нажатия «Слушать гида»
+// рассказ начинался значительно быстрее.
+const storyAudioCache=new Map();
+let storyPreloadPromise=null;
 let recording=false;
 let recorder=null;
 let chunks=[];
@@ -1097,6 +1103,46 @@ function resumeStoryAfterQuestion(){
 
 }
 
+async function preloadStoryAudio(text){
+
+  if(!text || storyAudioCache.has(text)){
+    return storyAudioCache.get(text)||null;
+  }
+
+  if(storyPreloadPromise && storyPreloadPromise.text===text){
+    return storyPreloadPromise.promise;
+  }
+
+  const promise=(async()=>{
+    try{
+      const r=await fetch(
+        '/api/tts',
+        {
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({text})
+        }
+      );
+
+      if(!r.ok){
+        throw new Error('TTS '+r.status);
+      }
+
+      const blob=await r.blob();
+      const url=URL.createObjectURL(blob);
+      storyAudioCache.set(text,url);
+      return url;
+    }catch(e){
+      return null;
+    }
+  })();
+
+  storyPreloadPromise={text,promise};
+  return promise;
+}
+
 async function speak(text){
 
   stopAudio();
@@ -1108,26 +1154,13 @@ async function speak(text){
 
   try{
 
-    const r=await fetch(
-      '/api/tts',
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify({text})
-      }
-    );
+    const cachedUrl=await preloadStoryAudio(text);
 
-    if(!r.ok){
-      throw new Error('TTS '+r.status);
+    if(!cachedUrl){
+      throw new Error('TTS preload');
     }
 
-    const blob=await r.blob();
-
-    audio=new Audio(
-      URL.createObjectURL(blob)
-    );
+    audio=new Audio(cachedUrl);
 
     audio.onended=()=>stopAudio();
 
@@ -2346,6 +2379,11 @@ function toast(t){
 }
 
 render();
+
+// Запускаем получение первого аудиофрагмента сразу после открытия WALKAI.
+// Это не блокирует интерфейс: к моменту нажатия «Слушать гида» аудио
+// обычно уже будет готово.
+preloadStoryAudio(data[0].s);
 
 </script>
 
