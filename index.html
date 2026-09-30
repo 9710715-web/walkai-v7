@@ -1064,6 +1064,239 @@ header{
   .actionRow .mic,.actionRow .cameraBtn{font-size:11px}
 }
 </style>
+
+<style>
+/* WALKAI V7 — финальная полировка навигации и камеры */
+
+/* Все основные кнопки маршрута — единый цвет и единая логика */
+.playerNav{
+  grid-template-columns:74px minmax(0,1fr) 74px;
+  gap:7px;
+  align-items:stretch;
+}
+
+.playerNav .navBtn,
+.playerNav .mainListen,
+.actionRow .mic,
+.actionRow .cameraBtn{
+  background:#111 !important;
+  color:#fff !important;
+  border:0;
+}
+
+.playerNav .navBtn{
+  height:68px;
+  padding:7px 4px;
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+}
+
+.playerNav .navBtn .playerIcon{
+  font-size:18px;
+  line-height:1;
+  color:#fff;
+  order:1;
+}
+
+.playerNav .navBtn > span:not(.playerIcon):not(.navHint){
+  order:2;
+  font-size:11px;
+  line-height:1;
+  font-weight:900;
+}
+
+.playerNav .navBtn .navHint{
+  order:3;
+  color:#cfcfcf;
+  font-size:8px;
+  line-height:1.05;
+  font-weight:600;
+}
+
+.playerNav .mainListen{
+  height:68px;
+  border-radius:18px;
+  box-shadow:0 4px 14px #0003;
+}
+
+.playerNav .mainListen .playIcon{
+  color:#fff !important;
+}
+
+.playerNav .mainListen .sub{
+  color:#d8d8d8;
+  opacity:.85;
+}
+
+/* Никакого отдельного бежевого/жёлтого состояния кнопки микрофона */
+.actionRow .mic,
+.actionRow .cameraBtn{
+  height:52px;
+  border-radius:15px;
+  box-shadow:0 4px 14px #0003;
+}
+
+.mic.recording{
+  background:#111 !important;
+  color:#fff !important;
+  animation:pulse 1s infinite;
+}
+
+.mic.processing{
+  background:#111 !important;
+  color:#fff !important;
+}
+
+/* Верх камеры: компактные, аккуратные и центрированные элементы */
+.panel.show .panelClose{
+  top:calc(14px + env(safe-area-inset-top));
+  left:14px;
+  width:46px;
+  min-width:46px;
+  height:46px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  background:#f5f3efee;
+  box-shadow:0 4px 16px #0005;
+}
+
+.panel.show .panelClose::before{
+  font-size:22px;
+  line-height:1;
+}
+
+.panel.show .cameraTopHint{
+  top:calc(14px + env(safe-area-inset-top));
+  right:14px;
+  width:128px;
+  min-width:128px;
+  height:46px;
+  padding:0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:23px;
+  background:#111d;
+  color:#fff;
+  box-sizing:border-box;
+}
+
+/* Живая камера: инструкция выше, затвор ниже — они больше не накладываются */
+.panel.show:has(.visionMedia.live) .visionText{
+  left:14px;
+  right:14px;
+  bottom:calc(112px + env(safe-area-inset-bottom));
+  max-height:64px;
+  padding:9px 12px;
+  border-radius:14px;
+  background:#111d;
+  color:#fff;
+  font-size:12px;
+  line-height:1.35;
+}
+
+.panel.show:has(.visionMedia.live) .captureBtn{
+  left:50%;
+  bottom:calc(8px + env(safe-area-inset-bottom));
+  width:104px;
+  height:96px;
+  transform:translateX(-50%);
+  display:flex !important;
+  align-items:center;
+  justify-content:flex-start;
+  gap:5px;
+}
+
+.panel.show:has(.visionMedia.live) .captureShutter{
+  width:68px;
+  height:68px;
+  flex:0 0 68px;
+  border:4px solid #fff;
+}
+
+.panel.show:has(.visionMedia.live) .captureShutter::after{
+  inset:7px;
+  border:2px solid #111;
+}
+
+.panel.show:has(.visionMedia.live) .captureLabel{
+  font-size:11px;
+  padding:5px 9px;
+  border-radius:11px;
+  background:#111d;
+  color:#fff;
+  line-height:1;
+}
+
+/* Результат фото: одна ровная композиция без полос и огромного чёрного провала */
+.panel.show.photoResult{
+  background:#f5f3ef;
+  padding:0 !important;
+  display:flex;
+  flex-direction:column;
+}
+
+.panel.show.photoResult .visionMedia.hasPhoto{
+  flex:0 0 44dvh !important;
+  width:100% !important;
+  height:44dvh !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  background:#111;
+  overflow:hidden;
+}
+
+.panel.show.photoResult .visionMedia.hasPhoto img{
+  display:block;
+  width:100% !important;
+  height:100% !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  background:#111;
+}
+
+.panel.show.photoResult .visionText{
+  position:static !important;
+  flex:1 1 auto;
+  min-height:0;
+  margin:12px 14px calc(14px + env(safe-area-inset-bottom));
+  padding:16px 16px 18px !important;
+  max-height:none !important;
+  overflow:auto;
+  border-radius:18px !important;
+  background:#fff !important;
+  color:#151515 !important;
+  box-shadow:0 4px 18px #0002 !important;
+}
+
+.panel.show.photoResult .visionTitle{
+  margin-bottom:7px;
+  font-size:19px;
+  line-height:1.15;
+  color:#111 !important;
+}
+
+.panel.show.photoResult .visionDesc{
+  font-size:13px;
+  line-height:1.5;
+  color:#383532 !important;
+}
+
+.panel.show.photoResult .captureBtn{
+  display:none !important;
+}
+</style>
+
 </head>
 
 <body>
