@@ -233,102 +233,136 @@ header{
   border-top:1px solid #eeeae4
 }
 
-.playerNav{
-  display:grid;
-  grid-template-columns:1fr 1.18fr 1fr;
-  gap:8px;
-  align-items:end;
+.playerProgress{
+  height:4px;
+  background:#e6e2dc;
+  border-radius:8px;
+  margin:0 4px 7px;
+  overflow:hidden
 }
 
-.playerCard{
-  height:72px;
+.playerProgressFill{
+  display:block;
+  width:0%;
+  height:100%;
+  background:#111;
+  border-radius:8px;
+  transition:width .08s linear
+}
+
+.playerTime{
+  display:flex;
+  justify-content:space-between;
+  padding:0 5px;
+  margin-bottom:6px;
+  color:#8a867f;
+  font-size:9px;
+  font-weight:700
+}
+
+.playerNav{
+  display:grid;
+  grid-template-columns:74px minmax(0,1fr) 74px;
+  gap:7px;
+  align-items:stretch
+}
+
+.navBtn{
+  min-width:0;
+  height:66px;
   border:0;
   border-radius:16px;
+  padding:6px 4px;
+  font-weight:900;
+  font-size:10px;
   background:#eeeae2;
   color:#151515;
-  font-weight:900;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:3px;
-  box-shadow:0 2px 7px #0001;
+  gap:3px
 }
 
-.playerCard:active,
+.navBtn:active,
+.cameraBtn:active,
 .mic:active,
-.cameraBtn:active{
+.mainListen:active,
+.captureBtn:active{
   transform:scale(.98)
 }
 
-.playerCard .playerIcon{
-  font-size:21px;
-  line-height:1;
+.playerIcon{
+  font-size:17px;
+  line-height:1
 }
 
-.playerCard .playerLabel{
-  font-size:11px;
+.navHint{
+  display:block;
+  font-size:8px;
+  line-height:1.05;
+  font-weight:600;
+  color:#8a867f
 }
 
 .mainListen{
   width:100%;
-  height:78px;
-  border:0;
+  height:66px;
+  margin:0;
+  padding:8px 8px;
   border-radius:18px;
   background:#111;
   color:#fff;
+  border:0;
   font-weight:900;
+  font-size:13px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:3px;
-  box-shadow:0 5px 16px #0003;
+  line-height:1.05;
+  box-shadow:0 4px 14px #00018
 }
 
-.mainListen.speaking{background:#222}
-
-.mainListen .playIcon{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  background:#fff;
-  color:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-  line-height:1;
+.mainListen.speaking{
+  background:#171717
 }
 
-.mainListen .playLabel{
-  font-size:11px;
+.playIcon{
+  font-size:23px;
   line-height:1;
+  margin-bottom:2px
+}
+
+.playLabel{
+  font-size:13px;
+  line-height:1.05
 }
 
 .mainListen .sub{
   display:block;
   font-size:8px;
   font-weight:500;
-  opacity:.68;
-  white-space:nowrap;
+  opacity:.62;
+  margin-top:3px;
+  line-height:1.05
 }
 
 .mic{
   width:100%;
-  height:54px;
-  margin-top:8px;
+  height:52px;
+  margin-top:7px;
   border-radius:15px;
   border:0;
   background:#111;
   color:#fff;
-  font-size:13px;
+  font-size:12px;
   font-weight:900;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
-  box-shadow:0 4px 14px #0002;
+  gap:7px;
+  box-shadow:0 4px 14px #0002
 }
 
 .mic.recording{
@@ -343,7 +377,9 @@ header{
   animation:none
 }
 
-.mic span{font-size:13px}
+.mic span{
+  font-size:12px
+}
 
 @keyframes pulse{
   50%{transform:scale(1.03);opacity:.8}
@@ -351,18 +387,24 @@ header{
 
 .cameraBtn{
   width:100%;
-  height:54px;
-  margin-top:8px;
+  height:52px;
+  margin-top:7px;
   padding:8px;
   border:0;
   border-radius:15px;
   background:#eeeae2;
   color:#151515;
   font-weight:900;
-  font-size:13px;
+  font-size:12px
 }
 
-.voiceStatus{display:none!important}
+/* ВАЖНО:
+   Статус микрофона больше не занимает отдельную строку.
+   Поэтому меню не сдвигается вверх/вниз.
+*/
+.voiceStatus{
+  display:none!important
+}
 
 .smallNote{
   font-size:11px;
@@ -376,18 +418,36 @@ header{
   scrollbar-gutter:stable
 }
 
-/* ПАНЕЛЬ «ЧТО Я ВИЖУ?» — полноэкранная камера */
+/* ПАНЕЛЬ "ЧТО Я ВИЖУ?" */
 .panelBackdrop{
   position:fixed;
   inset:0;
-  background:#000;
+  background:#0008;
   z-index:40;
   opacity:0;
   pointer-events:none;
   transition:opacity .2s ease
 }
 
-.panelBackdrop.show{opacity:1;pointer-events:auto}
+.panelBackdrop.show{
+  opacity:1;
+  pointer-events:auto
+}
+
+.panelBackdrop{
+  position:fixed;
+  inset:0;
+  background:#000b;
+  z-index:40;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease
+}
+
+.panelBackdrop.show{
+  opacity:1;
+  pointer-events:auto
+}
 
 .panel{
   position:fixed;
@@ -396,49 +456,68 @@ header{
   bottom:0;
   transform:translate(-50%,100%);
   width:min(430px,100vw);
+  height:100dvh;
   overflow:hidden;
   padding:0;
   border-radius:0;
   background:#111;
   z-index:50;
-  box-shadow:0 -12px 35px #0005;
+  box-shadow:0 -12px 35px #0006;
   transition:transform .24s ease;
   visibility:hidden;
   display:flex;
   flex-direction:column
 }
 
-.panel.show{transform:translate(-50%,0);visibility:visible}
+.panel.show{
+  transform:translate(-50%,0);
+  visibility:visible
+}
+
+.panel h2{
+  margin:0;
+  font-size:0;
+  line-height:0
+}
+
+.panel p{
+  font-size:14px;
+  line-height:1.5
+}
 
 .panelClose{
   position:absolute;
-  top:calc(10px + env(safe-area-inset-top));
+  top:calc(12px + env(safe-area-inset-top));
   left:12px;
-  right:12px;
   z-index:8;
-  width:calc(100% - 24px);
-  height:48px;
+  width:auto;
+  min-width:112px;
+  height:40px;
+  padding:0 14px;
   border:0;
-  border-radius:15px;
-  background:#f5f3efee;
-  color:#111;
-  font-size:14px;
+  background:#fff;
+  color:#151515;
+  border-radius:22px;
+  font-size:12px;
   font-weight:900;
-  box-shadow:0 3px 14px #0004;
+  box-shadow:0 4px 18px #0005
 }
 
-.panelTitle{
+.cameraTopHint{
   position:absolute;
-  top:calc(68px + env(safe-area-inset-top));
-  left:0;
-  right:0;
-  z-index:7;
-  margin:0;
-  text-align:center;
+  top:calc(12px + env(safe-area-inset-top));
+  right:12px;
+  z-index:8;
+  height:40px;
+  min-width:40px;
+  padding:0 12px;
+  border:0;
+  border-radius:22px;
+  background:#111b;
   color:#fff;
-  font-size:18px;
-  text-shadow:0 2px 8px #000;
-  pointer-events:none
+  font-size:11px;
+  font-weight:800;
+  backdrop-filter:blur(8px)
 }
 
 .visionMedia{
@@ -446,10 +525,10 @@ header{
   width:100%;
   flex:1 1 auto;
   min-height:0;
-  margin:0;
   border-radius:0;
   overflow:hidden;
   background:#111;
+  margin:0
 }
 
 .visionMedia video,
@@ -459,107 +538,162 @@ header{
   height:100%;
   max-height:none;
   object-fit:cover;
-  background:#111;
+  background:#111
 }
 
-.visionMedia.live video,
-.visionMedia.hasPhoto img{display:block}
+.visionMedia.live video{
+  display:block
+}
 
-#cam{display:none;width:100%;height:100%;object-fit:cover}
+.visionMedia.hasPhoto img{
+  display:block
+}
+
+#cam{
+  display:none;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:0
+}
 
 .visionText{
-  flex:0 0 auto;
-  max-height:34dvh;
-  overflow:auto;
-  margin:0;
-  padding:14px 16px calc(10px + env(safe-area-inset-bottom));
-  background:#f5f3ef;
-  color:#252321;
-  font-size:14px;
-  line-height:1.45;
-  border-radius:20px 20px 0 0;
-  box-shadow:0 -8px 25px #0003;
-  z-index:5
-}
-
-.visionTitle{font-size:19px;font-weight:900;margin-bottom:6px}
-.visionDesc{font-size:14px;line-height:1.5}
-
-.visionLoading{display:flex;align-items:center;gap:8px;font-weight:800}
-.visionDot{width:9px;height:9px;border-radius:50%;background:#111;animation:vdot 1s infinite}
-@keyframes vdot{50%{opacity:.25;transform:scale(.7)}}
-
-.visionActions{display:none}
-.visionBtn{display:none}
-
-.visionResultActions{
   position:absolute;
-  left:12px;
-  right:12px;
-  bottom:calc(10px + env(safe-area-inset-bottom));
-  z-index:9;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+  left:14px;
+  right:14px;
+  bottom:calc(92px + env(safe-area-inset-bottom));
+  z-index:7;
+  max-height:32dvh;
+  overflow:auto;
+  padding:13px 15px;
+  border-radius:17px;
+  background:#111d;
+  color:#fff;
+  backdrop-filter:blur(10px);
+  font-size:13px;
+  line-height:1.45;
+  box-shadow:0 5px 20px #0005
 }
 
-.visionResultActions button{
-  height:48px;
-  border:0;
-  border-radius:14px;
+.visionTitle{
+  font-size:18px;
   font-weight:900;
-  font-size:12px;
-  box-shadow:0 4px 14px #0004
+  margin-bottom:6px
 }
 
-.visionResultActions .speakBtn{background:#111;color:#fff}
-.visionResultActions .detailBtn{background:#d9c7a5;color:#111}
+.visionDesc{
+  font-size:13px;
+  line-height:1.5
+}
+
+.visionLoading{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800
+}
+
+.visionDot{
+  width:9px;
+  height:9px;
+  flex:0 0 9px;
+  border-radius:50%;
+  background:#fff;
+  animation:vdot 1s infinite
+}
+
+@keyframes vdot{
+  50%{opacity:.25;transform:scale(.7)}
+}
+
+.visionActions,
+.visionResultActions{
+  display:none!important
+}
 
 .captureBtn{
+  display:none;
   position:absolute;
   left:50%;
-  bottom:calc(18px + env(safe-area-inset-bottom));
+  bottom:calc(14px + env(safe-area-inset-bottom));
   transform:translateX(-50%);
-  z-index:9;
-  display:none;
-  width:calc(100% - 28px);
-  height:62px;
+  z-index:10;
+  width:82px;
+  height:82px;
   margin:0;
-  border:0;
-  border-radius:31px;
+  padding:0;
+  border:5px solid #fff;
+  border-radius:50%;
   background:#fff;
   color:#111;
   font-weight:900;
-  font-size:15px;
-  box-shadow:0 5px 22px #0005;
+  font-size:0;
+  box-shadow:0 5px 22px #0008
 }
 
-.captureBtn:active{transform:translateX(-50%) scale(.98)}
-
-.panel.busy .captureBtn{display:none!important}
-
-.panel.cameraLive .panelTitle{display:block}
-.panel.cameraLive .visionText{display:none}
-.panel.cameraLive .captureBtn{display:block!important}
-
-.panel.photoResult .panelTitle{display:none}
-.panel.photoResult .visionText{display:block}
-.panel.photoResult .visionMedia{flex:1 1 auto}
-
-.panel.photoResult .visionResultActions{display:grid!important}
-
-.panelError{
+.captureBtn::after{
+  content:'';
   position:absolute;
-  left:16px;
-  right:16px;
-  bottom:calc(92px + env(safe-area-inset-bottom));
-  z-index:10;
-  padding:14px;
-  border-radius:15px;
-  background:#f5f3ef;
-  color:#111;
-  font-size:14px;
-  line-height:1.45;
+  inset:7px;
+  border-radius:50%;
+  border:2px solid #111;
+  background:#fff
+}
+
+.panel.cameraLive .captureBtn{
+  display:block!important
+}
+
+.panel.cameraLive .visionText{
+  background:#1118;
+  bottom:calc(106px + env(safe-area-inset-bottom));
+  font-size:12px;
+  padding:9px 12px;
+  max-height:72px
+}
+
+.panel.cameraLive .visionMedia{
+  flex:1 1 auto
+}
+
+.panel.photoResult .visionText{
+  left:10px;
+  right:10px;
+  bottom:10px;
+  max-height:40dvh;
+  background:#fff;
+  color:#151515;
+  box-shadow:0 6px 24px #0005
+}
+
+.panel.photoResult .visionTitle{
+  color:#111
+}
+
+.panel.photoResult .visionDesc{
+  color:#383532
+}
+
+.panel.photoResult .captureBtn{
+  display:none!important
+}
+
+.panel.photoResult .visionMedia img{
+  object-fit:contain;
+  background:#111
+}
+
+.panel.busy .visionText{
+  opacity:.92
+}
+
+.panel button.full{
+  width:100%;
+  margin-top:8px;
+  padding:11px;
+  border:0;
+  border-radius:13px;
+  font-weight:800
 }
 
 .toast{
@@ -601,17 +735,22 @@ header{
     flex-basis:370px
   }
 
+  .playerNav{
+    grid-template-columns:70px minmax(0,1fr) 70px;
+    gap:6px
+  }
+
+  .mainListen,
+  .navBtn{
+    height:68px
+  }
+
   .mainListen{
-    height:78px;
+    padding:8px 6px
   }
 
-  .playerCard{
-    height:72px;
-  }
-
-  .mic,
-  .cameraBtn{
-    height:54px;
+  .navBtn{
+    padding:6px 3px
   }
 }
 
@@ -656,6 +795,111 @@ header{
 
 .visionMedia.hasPhoto img{
   display:block
+}
+<style>
+/* WALKAI V7 — камера на весь экран, кнопка фото закреплена снизу */
+.panel.show{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  padding:0 14px calc(78px + env(safe-area-inset-bottom));
+  border-radius:22px 22px 0 0;
+}
+
+.panel.show h2{
+  display:none;
+}
+
+.panel.show .panelClose{
+  position:absolute;
+  top:10px;
+  left:14px;
+  right:14px;
+  width:calc(100% - 28px);
+  margin:0;
+  z-index:56;
+  background:#f5f3efee;
+  backdrop-filter:blur(6px);
+}
+
+.panel.show .visionMedia{
+  flex:1 1 auto;
+  min-height:0;
+  width:100%;
+  margin:0;
+  border-radius:0;
+}
+
+.panel.show .visionMedia.live{
+  height:100%;
+}
+
+.panel.show .visionMedia.live video,
+.panel.show #cam{
+  width:100%;
+  height:100%;
+  max-height:none;
+  min-height:0;
+  object-fit:cover;
+  border-radius:0;
+}
+
+.panel.show .visionMedia.hasPhoto{
+  flex:0 0 auto;
+  height:auto;
+  max-height:55dvh;
+}
+
+.panel.show .visionMedia.hasPhoto img{
+  width:100%;
+  height:auto;
+  max-height:55dvh;
+  object-fit:contain;
+  border-radius:0;
+}
+
+.panel.show .visionText{
+  flex:0 0 auto;
+  max-height:30dvh;
+  overflow:auto;
+  padding:12px 2px 8px;
+}
+
+.panel.show .captureBtn{
+  position:fixed;
+  left:14px;
+  right:14px;
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  width:calc(100% - 28px);
+  height:58px;
+  margin:0;
+  z-index:57;
+  border-radius:15px;
+  font-size:15px;
+  box-shadow:0 6px 22px #0004;
+}
+
+.panel.show .captureBtn{
+  display:none;
+}
+
+.panel.show:has(.visionMedia.live) .captureBtn{
+  display:block;
+}
+
+.panel.show .visionMedia.live + #photoInput + .visionText{
+  position:absolute;
+  left:24px;
+  right:24px;
+  bottom:82px;
+  z-index:55;
+  padding:8px 12px;
+  border-radius:12px;
+  background:#0008;
+  color:#fff;
+  font-size:12px;
+  max-height:none;
+  pointer-events:none;
 }
 </style>
 </head>
@@ -708,15 +952,25 @@ header{
 
   <div class="controls">
 
+    <div class="playerProgress" aria-hidden="true">
+      <span class="playerProgressFill" id="playerProgressFill"></span>
+    </div>
+
+    <div class="playerTime">
+      <span id="playerElapsed">0:00</span>
+      <span id="playerRemaining">—</span>
+    </div>
+
     <div class="playerNav">
 
       <button
-        class="playerCard"
+        class="navBtn"
         onclick="previous()"
         aria-label="Предыдущая остановка"
       >
         <span class="playerIcon">◀</span>
-        <span class="playerLabel">Назад</span>
+        <span>Назад</span>
+        <span class="navHint">1 остановка</span>
       </button>
 
       <button
@@ -726,17 +980,18 @@ header{
         aria-label="Пуск или пауза"
       >
         <span class="playIcon">▶</span>
-        <span class="playLabel">Слушать гида</span>
-        <span class="sub">Нажмите, чтобы начать</span>
+        <span class="playLabel">Продолжить</span>
+        <span class="sub">Нажмите, чтобы начать рассказ</span>
       </button>
 
       <button
-        class="playerCard"
+        class="navBtn"
         onclick="next()"
         aria-label="Следующая остановка"
       >
+        <span>Дальше</span>
         <span class="playerIcon">▶</span>
-        <span class="playerLabel">Дальше</span>
+        <span class="navHint">1 остановка</span>
       </button>
 
     </div>
@@ -755,9 +1010,8 @@ header{
     <button
       class="cameraBtn"
       onclick="camera()"
-      aria-label="Что я вижу? Сделать фото"
     >
-      📷 <span>Что я вижу? — Сделать фото</span>
+      📷 Что я вижу?
     </button>
 
   </div>
@@ -782,17 +1036,27 @@ header{
     onclick="camera()"
     aria-label="Вернуться к маршруту"
   >
-    ← Вернуться к маршруту
+    ← Назад
   </button>
 
-  <h2 class="panelTitle">Что я вижу?</h2>
+  <div class="cameraTopHint">📷 WALKAI</div>
+
+  <h2>Что я вижу?</h2>
 
   <div
     class="visionMedia"
     id="visionMedia"
   >
-    <video id="cam" autoplay playsinline></video>
-    <img id="photo" alt="Фото объекта">
+    <video
+      id="cam"
+      autoplay
+      playsinline
+    ></video>
+
+    <img
+      id="photo"
+      alt="Фото объекта"
+    >
   </div>
 
   <input
@@ -804,7 +1068,12 @@ header{
     onchange="photoTaken(this)"
   >
 
-  <div class="visionText" id="vision"></div>
+  <div
+    class="visionText"
+    id="vision"
+  >
+    Наведите камеру на объект.
+  </div>
 
   <button
     class="captureBtn"
@@ -813,19 +1082,6 @@ header{
   >
     📸 Сфотографировать
   </button>
-
-  <div
-    class="visionResultActions"
-    id="visionResultActions"
-    style="display:none"
-  >
-    <button class="speakBtn" onclick="speakVision()">
-      🔊 Слушать ещё раз
-    </button>
-    <button class="detailBtn" onclick="visionDetail()">
-      ✨ Подробнее
-    </button>
-  </div>
 
 </div>
 
@@ -907,8 +1163,6 @@ let voiceCancelled=false;
 let storyResumeActive=false;
 let storyResumeIndex=-1;
 let storyResumeTime=0;
-let storyLoading=false;
-let storyPaused=false;
 
 const $=id=>document.getElementById(id);
 
@@ -921,6 +1175,49 @@ function render(){
   $('count').textContent=
     `Остановка ${i+1} из 8 · ${i?120:40} м`;
 
+  if(!audio){
+    setListenButton('▶','Продолжить','Нажмите, чтобы начать рассказ',false);
+    updatePlayerProgress();
+  }
+
+}
+
+function updatePlayerProgress(){
+
+  const fill=$('playerProgressFill');
+  const elapsed=$('playerElapsed');
+  const remaining=$('playerRemaining');
+
+  if(!fill || !elapsed || !remaining){
+    return;
+  }
+
+  if(audio && Number.isFinite(audio.duration) && audio.duration>0){
+    const cur=Math.max(0,Math.min(audio.currentTime||0,audio.duration));
+    fill.style.width=((cur/audio.duration)*100)+'%';
+    elapsed.textContent=formatTime(cur);
+    remaining.textContent='−'+formatTime(Math.max(0,audio.duration-cur));
+  }else{
+    fill.style.width='0%';
+    elapsed.textContent='0:00';
+    remaining.textContent='—';
+  }
+}
+
+function formatTime(sec){
+  sec=Math.max(0,Math.round(Number(sec)||0));
+  const m=Math.floor(sec/60);
+  const s=String(sec%60).padStart(2,'0');
+  return m+':'+s;
+}
+
+function setListenButton(icon,label,sub,speaking=false){
+  const b=$('listen');
+  b.classList.toggle('speaking',!!speaking);
+  b.innerHTML=
+    '<span class="playIcon">'+icon+'</span>'+
+    '<span class="playLabel">'+label+'</span>'+
+    '<span class="sub">'+sub+'</span>';
 }
 
 function stopAudio(){
@@ -941,10 +1238,8 @@ function stopAudio(){
     window.speechSynthesis.cancel();
   }
 
-  storyLoading=false;
-  storyPaused=false;
-  $('listen').classList.remove('speaking');
-  $('listen').innerHTML='<span class="playIcon">▶</span><span class="playLabel">Слушать гида</span><span class="sub">Нажмите, чтобы начать</span>';
+  setListenButton('▶','Продолжить','Нажмите, чтобы начать рассказ',false);
+  updatePlayerProgress();
 
 }
 
@@ -963,9 +1258,7 @@ function pauseStoryForQuestion(){
 
     audio.pause();
 
-    $('listen').innerHTML='<span class="playIcon">▶</span><span class="playLabel">Пауза</span><span class="sub">Вопрос гиду</span>';
-
-    $('listen').classList.add('speaking');
+    setListenButton('⏸','Пауза','Вопрос гиду — продолжу после ответа',true);
 
   }else{
 
@@ -1003,9 +1296,7 @@ function resumeStoryAfterQuestion(){
   // audio уже стоит ровно на месте паузы. Повторный currentTime=...
   // здесь не нужен: он заставляет браузер заново делать seek и даёт
   // заметную длинную паузу перед продолжением.
-  $('listen').innerHTML='<span class="playIcon">⏸</span><span class="playLabel">Продолжаем…</span><span class="sub">Гид продолжит автоматически</span>';
-
-  $('listen').classList.add('speaking');
+  setListenButton('⏸','Продолжаем…','Гид продолжит автоматически',true);
 
   // Небольшая пауза отделяет ответ на вопрос от продолжения рассказа.
   window.setTimeout(()=>{
@@ -1041,7 +1332,7 @@ function resumeStoryAfterQuestion(){
 
     }
 
-  },350);
+  },500);
 
 }
 
@@ -1088,48 +1379,58 @@ async function preloadStoryAudio(text){
 async function speak(text){
 
   stopAudio();
-  storyLoading=true;
 
-  $('listen').innerHTML='<span class="playIcon">⏳</span><span class="playLabel">Загрузка…</span><span class="sub">Подождите немного</span>';
-  $('listen').classList.add('speaking');
+  setListenButton('⏸','Пауза','Нажмите, чтобы продолжить',true);
+  updatePlayerProgress();
 
   try{
 
     const cachedUrl=await preloadStoryAudio(text);
-    if(!cachedUrl) throw new Error('TTS preload');
+
+    if(!cachedUrl){
+      throw new Error('TTS preload');
+    }
 
     audio=new Audio(cachedUrl);
-    storyLoading=false;
-    storyPaused=false;
 
+    audio.ontimeupdate=updatePlayerProgress;
+    audio.onloadedmetadata=updatePlayerProgress;
     audio.onended=()=>stopAudio();
-    audio.onerror=()=>stopAudio();
+
+    audio.onerror=()=>{
+      throw new Error('audio')
+    };
 
     await audio.play();
 
-    $('listen').innerHTML='<span class="playIcon">⏸</span><span class="playLabel">Пауза</span><span class="sub">Нажмите, чтобы поставить на паузу</span>';
-
   }catch(e){
-
-    storyLoading=false;
 
     if('speechSynthesis' in window){
 
       const u=new SpeechSynthesisUtterance(text);
+
       u.lang='ru-RU';
       u.rate=.96;
       u.pitch=1;
+
       u.onend=()=>stopAudio();
-      u.onerror=()=>{stopAudio();toast('Не удалось включить звук')};
+
+      u.onerror=()=>{
+        stopAudio();
+        toast('Не удалось включить звук')
+      };
 
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
 
-      $('listen').innerHTML='<span class="playIcon">⏸</span><span class="playLabel">Пауза</span><span class="sub">Нажмите, чтобы поставить на паузу</span>';
-
     }else{
+
       stopAudio();
-      toast('В этом браузере нет поддержки озвучки');
+
+      toast(
+        'В этом браузере нет поддержки озвучки'
+      );
+
     }
 
   }
@@ -1153,10 +1454,7 @@ async function speakAnswer(text){
     answerAudio=null;
   }
 
-  $('listen').innerHTML=
-    '<span class="playIcon">🔊</span><span class="playLabel">Гид отвечает…</span><span class="sub">После ответа продолжу рассказ</span>';
-
-  $('listen').classList.add('speaking');
+  setListenButton('🔊','Гид отвечает…','После ответа продолжу рассказ',true);
 
   try{
 
@@ -1231,28 +1529,47 @@ async function speakAnswer(text){
 
 function listenStory(){
 
-  if(recording || answerAudio || storyLoading){
+  if(recording || answerAudio){
     return;
   }
 
   if(audio){
 
-    if(audio.paused || audio.ended){
-      audio.play().catch(()=>{});
-      storyPaused=false;
-      $('listen').classList.add('speaking');
-      $('listen').innerHTML='<span class="playIcon">⏸</span><span class="playLabel">Пауза</span><span class="sub">Нажмите, чтобы поставить на паузу</span>';
+    if(audio.ended){
+      stopAudio();
+      speak(data[i].s);
+      return;
+    }
+
+    if(audio.paused){
+
+      audio.play().then(()=>{
+        setListenButton('⏸','Пауза','Нажмите, чтобы поставить на паузу',true);
+      }).catch(()=>{});
+
     }else{
+
       audio.pause();
-      storyPaused=true;
-      $('listen').classList.remove('speaking');
-      $('listen').innerHTML='<span class="playIcon">▶</span><span class="playLabel">Продолжить</span><span class="sub">Нажмите, чтобы продолжить</span>';
+      setListenButton('▶','Продолжить','Нажмите, чтобы продолжить',true);
+
     }
 
     return;
   }
 
-  if('speechSynthesis' in window && window.speechSynthesis.speaking){
+  if(
+    'speechSynthesis' in window &&
+    window.speechSynthesis.speaking
+  ){
+
+    if(window.speechSynthesis.paused){
+      window.speechSynthesis.resume();
+      setListenButton('⏸','Пауза','Нажмите, чтобы поставить на паузу',true);
+    }else{
+      window.speechSynthesis.pause();
+      setListenButton('▶','Продолжить','Нажмите, чтобы продолжить',true);
+    }
+
     return;
   }
 
@@ -1314,16 +1631,30 @@ function camera(){
 
   const p=$('camPanel');
   const b=$('panelBackdrop');
+
   const open=!p.classList.contains('show');
 
   p.classList.toggle('show',open);
   b.classList.toggle('show',open);
 
   if(open){
+
+    // Останавливаем рассказ, чтобы камера и ответ AI не перекрывались.
+    stopAudio();
     resetVision();
-    window.setTimeout(()=>startCam(),120);
+
+    // Сразу после открытия запускаем камеру.
+    // Небольшая задержка нужна, чтобы панель успела появиться.
+    window.setTimeout(()=>{
+      if(p.classList.contains('show')){
+        startCam();
+      }
+    },120);
+
   }else{
+
     stopCam();
+
   }
 
 }
@@ -1332,24 +1663,26 @@ function resetVision(){
 
   stopCam();
 
-  visionResult={title:'',description:''};
+  visionResult={
+    title:'',
+    description:''
+  };
 
-  $('visionMedia').classList.remove('live','hasPhoto');
+  $('visionMedia').classList.remove(
+    'live',
+    'hasPhoto'
+  );
+
   $('photo').style.display='none';
   $('cam').style.display='none';
+
   $('captureBtn').style.display='none';
-  $('visionResultActions').style.display='none';
 
   $('camPanel').classList.remove('busy','cameraLive','photoResult');
 
-  $('vision').innerHTML='';
+  $('vision').textContent=
+    'Включаю камеру…';
 
-}
-
-function takePhoto(){
-  if(!$('camPanel').classList.contains('busy')){
-    $('photoInput').click();
-  }
 }
 
 function stopCam(){
@@ -1357,49 +1690,84 @@ function stopCam(){
   const v=$('cam');
 
   if(v.srcObject){
-    v.srcObject.getTracks().forEach(t=>t.stop());
+
+    v.srcObject
+      .getTracks()
+      .forEach(t=>t.stop());
+
     v.srcObject=null;
+
   }
 
   v.style.display='none';
+
   $('visionMedia').classList.remove('live');
+
   $('captureBtn').style.display='none';
 
 }
 
 async function startCam(){
 
-  if($('camPanel').classList.contains('busy')) return;
-
-  if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){
-    $('vision').innerHTML='<div class="panelError"><strong>Камера требует защищённую страницу.</strong><br>Откройте WALKAI через HTTPS и повторите.</div>';
+  if(
+    $('camPanel').classList.contains('busy')
+  ){
     return;
+  }
+
+  if(
+    !window.isSecureContext ||
+    !navigator.mediaDevices?.getUserMedia
+  ){
+
+    $('vision').innerHTML=
+      '<strong>Камера требует защищённую страницу.</strong><br>Откройте WALKAI через HTTPS и повторите.';
+
+    return;
+
   }
 
   try{
 
     stopCam();
 
-    const stream=await navigator.mediaDevices.getUserMedia({
-      video:{
-        facingMode:{ideal:'environment'},
-        width:{ideal:1280},
-        height:{ideal:720}
-      },
-      audio:false
-    });
+    $('vision').textContent=
+      'Запрашиваю доступ к камере…';
+
+    const stream=
+      await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:{
+            ideal:'environment'
+          },
+          width:{
+            ideal:1280
+          },
+          height:{
+            ideal:720
+          }
+        },
+        audio:false
+      });
 
     const v=$('cam');
+
     v.srcObject=stream;
+
     v.style.display='block';
 
     $('visionMedia').classList.add('live');
     $('camPanel').classList.add('cameraLive');
+
     $('captureBtn').style.display='block';
+
+    $('vision').textContent=
+      'Наведите камеру на объект и нажмите «Сфотографировать».';
 
   }catch(e){
 
-    $('vision').innerHTML='<div class="panelError"><strong>Не удалось включить камеру.</strong><br>Разрешите доступ к камере для WALKAI в настройках браузера и попробуйте ещё раз.</div>';
+    $('vision').innerHTML=
+      '<strong>Не удалось включить камеру.</strong><br>Разрешите доступ к камере для WALKAI в настройках браузера.';
 
   }
 
@@ -1409,37 +1777,78 @@ function capturePhoto(){
 
   const v=$('cam');
 
-  if(!v.srcObject || !v.videoWidth){
-    toast('Камера ещё не готова');
+  if(
+    !v.srcObject ||
+    !v.videoWidth
+  ){
+
+    toast(
+      'Камера ещё не готова'
+    );
+
     return;
+
   }
 
   const c=document.createElement('canvas');
+
   const max=1600;
-  const scale=Math.min(1,max/v.videoWidth);
 
-  c.width=Math.round(v.videoWidth*scale);
-  c.height=Math.round(v.videoHeight*scale);
+  const scale=Math.min(
+    1,
+    max/v.videoWidth
+  );
 
-  c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+  c.width=Math.round(
+    v.videoWidth*scale
+  );
 
-  c.toBlob(blob=>{
+  c.height=Math.round(
+    v.videoHeight*scale
+  );
 
-    if(!blob)return;
+  c.getContext('2d').drawImage(
+    v,
+    0,
+    0,
+    c.width,
+    c.height
+  );
 
-    stopCam();
+  c.toBlob(
+    blob=>{
 
-    const f=new File([blob],'walkai-photo.jpg',{type:'image/jpeg'});
-    analyzeVisionFile(f);
+      if(!blob)return;
 
-  },'image/jpeg',.88);
+      stopCam();
+
+      const f=new File(
+        [blob],
+        'walkai-photo.jpg',
+        {
+          type:'image/jpeg'
+        }
+      );
+
+      analyzeVisionFile(f);
+
+    },
+    'image/jpeg',
+    .88
+  );
 
 }
 
 async function photoTaken(input){
+
   const f=input.files?.[0];
-  if(f) await analyzeVisionFile(f);
+
+  if(f){
+    await analyzeVisionFile(f);
+  }
+
   input.value='';
+
 }
 
 async function analyzeVisionFile(file){
@@ -1449,15 +1858,11 @@ async function analyzeVisionFile(file){
 
   media.classList.remove('live');
   media.classList.add('hasPhoto');
-  $('camPanel').classList.remove('cameraLive');
-  $('camPanel').classList.add('photoResult');
 
   img.src=URL.createObjectURL(file);
   img.style.display='block';
 
   $('camPanel').classList.add('busy');
-
-  $('visionResultActions').style.display='none';
 
   $('vision').innerHTML=
     '<div class="visionLoading"><span class="visionDot"></span> AI анализирует фотографию…</div>';
@@ -1520,11 +1925,8 @@ async function analyzeVisionFile(file){
       )+
       '</div>';
 
-    $('visionResultActions').style.display=
-      'grid';
-
-    // После распознавания сразу озвучиваем результат.
-    window.setTimeout(()=>speakVision(),120);
+    // После анализа сразу показываем результат и озвучиваем его.
+    await speakVision();
 
   }catch(e){
 
@@ -2041,7 +2443,7 @@ async function askAIText(text){
 
     fd.append(
       'text',
-      text
+      'Ответь на вопрос пользователя строго по существу. Если вопрос требует одного факта, числа, даты или названия — дай только этот ответ с необходимой единицей измерения. Не добавляй историю, легенды, полёт Хезарфена, контекст, примеры, вступление или заключение. Максимум 1–2 коротких предложения. Не повторяй вопрос. Вопрос пользователя: '+text
     );
 
     fd.append(
@@ -2106,6 +2508,11 @@ async function askAI(blob){
       'audio',
       blob,
       'question.webm'
+    );
+
+    fd.append(
+      'instruction',
+      'Ответь на вопрос строго по существу. Если нужен один факт, число, дата или название — дай только его. Не добавляй историю, легенды, контекст, примеры или вступление. Максимум 1–2 коротких предложения.'
     );
 
     fd.append(
