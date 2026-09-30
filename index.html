@@ -233,42 +233,70 @@ header{
   border-top:1px solid #f0ede8
 }
 
+.playerNav{
+  display:grid;
+  grid-template-columns:1fr 1.18fr 1fr;
+  gap:8px;
+  align-items:stretch;
+}
+
 .mainListen{
   width:100%;
-  height:58px;
-  margin-top:0;
-  padding:10px 14px;
-  border-radius:15px;
+  min-width:0;
+  height:68px;
+  padding:7px 8px;
+  border-radius:16px;
   background:#111;
   color:#fff;
   border:0;
   font-weight:900;
-  font-size:14px;
+  font-size:13px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  line-height:1.1
+  line-height:1.05;
+  box-shadow:0 4px 14px #0002
 }
 
 .mainListen.speaking{
   background:#2a2a2a
 }
 
-.mainListen .sub{
-  display:block;
-  font-size:9px;
-  font-weight:500;
-  opacity:.65;
-  margin-top:3px
+.mainListen .playIcon{
+  font-size:22px;
+  line-height:1;
+  margin-bottom:3px
 }
 
-.bottom{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  margin-top:7px;
-  align-items:center
+.mainListen .playLabel{
+  display:block;
+  font-size:11px;
+  font-weight:900
+}
+
+.mainListen .sub{
+  display:block;
+  font-size:8px;
+  font-weight:500;
+  opacity:.72;
+  margin-top:4px;
+  white-space:nowrap
+}
+
+.playerSide{
+  height:68px!important;
+  padding:7px 5px!important;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+}
+
+.playerSide .playerIcon{
+  font-size:18px;
+  line-height:1
 }
 
 .navBtn{
@@ -380,18 +408,20 @@ header{
 .panel{
   position:fixed;
   left:50%;
-  top:74px;
+  top:58px;
   bottom:0;
   transform:translate(-50%,100%);
   width:min(430px,100vw);
-  overflow:auto;
-  padding:12px 14px calc(18px + env(safe-area-inset-bottom));
+  overflow:hidden;
+  padding:10px 14px calc(12px + env(safe-area-inset-bottom));
   border-radius:22px 22px 0 0;
   background:#f5f3ef;
   z-index:50;
   box-shadow:0 -12px 35px #0004;
   transition:transform .24s ease;
-  visibility:hidden
+  visibility:hidden;
+  display:flex;
+  flex-direction:column
 }
 
 .panel.show{
@@ -411,7 +441,7 @@ header{
 
 /* Большая кнопка возврата */
 .panelClose{
-  float:none;
+  flex:0 0 44px;
   width:100%;
   height:44px;
   border:0;
@@ -420,7 +450,7 @@ header{
   font-size:13px;
   font-weight:900;
   color:#151515;
-  margin-bottom:10px
+  margin-bottom:8px
 }
 
 .visionMedia{
@@ -428,7 +458,8 @@ header{
   border-radius:16px;
   overflow:hidden;
   background:#e8e5df;
-  margin-bottom:10px
+  margin:0 0 10px;
+  flex:0 0 auto
 }
 
 .visionMedia video,
@@ -455,13 +486,6 @@ header{
   object-fit:cover;
   border-radius:14px
 }
-
-/* Упрощённый режим «Что я вижу?» */
-.visionActions,
-.visionResultActions{
-  display:none!important
-}
-
 
 .visionText{
   font-size:15px;
@@ -507,7 +531,8 @@ header{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px;
-  margin-top:10px
+  margin-top:10px;
+  flex:0 0 auto
 }
 
 .visionBtn{
@@ -554,14 +579,16 @@ header{
 .captureBtn{
   display:none;
   width:100%;
-  height:52px;
-  margin-top:8px;
+  height:58px;
+  margin:8px 0 0;
+  flex:0 0 58px;
   border:0;
-  border-radius:12px;
+  border-radius:14px;
   background:#111;
   color:#fff;
   font-weight:900;
-  font-size:13px
+  font-size:14px;
+  box-shadow:0 4px 14px #0002
 }
 
 .panel.busy .visionActions{
@@ -572,10 +599,11 @@ header{
 .panel img#photo{
   display:none;
   width:100%;
-  height:190px;
-  object-fit:cover;
+  height:auto;
+  max-height:52dvh;
+  object-fit:contain;
   border-radius:14px;
-  margin-top:8px
+  margin:0
 }
 
 .panel button.full{
@@ -600,6 +628,41 @@ header{
   z-index:60;
   max-width:90%;
   text-align:center
+}
+
+/* Камера: почти весь экран — видоискатель, кнопка закреплена внизу */
+.panel.cameraLive .panelTitle,
+.panel.cameraLive .visionText,
+.panel.cameraLive .visionActions{
+  display:none
+}
+
+.panel.cameraLive .visionMedia{
+  flex:1 1 auto;
+  min-height:0;
+  margin:0;
+  border-radius:14px;
+}
+
+.panel.cameraLive .visionMedia.live video{
+  width:100%;
+  height:100%;
+  max-height:none;
+  object-fit:cover;
+  border-radius:14px
+}
+
+.panel.cameraLive .captureBtn{
+  display:block!important;
+}
+
+.panel.photoResult .visionMedia{
+  margin-top:2px;
+  max-height:52dvh;
+}
+
+.panel.photoResult .visionMedia.hasPhoto{
+  display:block;
 }
 
 @media(max-width:430px){
@@ -627,8 +690,12 @@ header{
   }
 
   .mainListen{
-    height:58px;
-    padding:10px 12px
+    height:68px;
+    padding:7px 8px
+  }
+
+  .playerSide{
+    height:68px!important
   }
 
   .navBtn,
@@ -679,111 +746,6 @@ header{
 
 .visionMedia.hasPhoto img{
   display:block
-}
-<style>
-/* WALKAI V7 — камера на весь экран, кнопка фото закреплена снизу */
-.panel.show{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  padding:0 14px calc(78px + env(safe-area-inset-bottom));
-  border-radius:22px 22px 0 0;
-}
-
-.panel.show h2{
-  display:none;
-}
-
-.panel.show .panelClose{
-  position:absolute;
-  top:10px;
-  left:14px;
-  right:14px;
-  width:calc(100% - 28px);
-  margin:0;
-  z-index:56;
-  background:#f5f3efee;
-  backdrop-filter:blur(6px);
-}
-
-.panel.show .visionMedia{
-  flex:1 1 auto;
-  min-height:0;
-  width:100%;
-  margin:0;
-  border-radius:0;
-}
-
-.panel.show .visionMedia.live{
-  height:100%;
-}
-
-.panel.show .visionMedia.live video,
-.panel.show #cam{
-  width:100%;
-  height:100%;
-  max-height:none;
-  min-height:0;
-  object-fit:cover;
-  border-radius:0;
-}
-
-.panel.show .visionMedia.hasPhoto{
-  flex:0 0 auto;
-  height:auto;
-  max-height:55dvh;
-}
-
-.panel.show .visionMedia.hasPhoto img{
-  width:100%;
-  height:auto;
-  max-height:55dvh;
-  object-fit:contain;
-  border-radius:0;
-}
-
-.panel.show .visionText{
-  flex:0 0 auto;
-  max-height:30dvh;
-  overflow:auto;
-  padding:12px 2px 8px;
-}
-
-.panel.show .captureBtn{
-  position:fixed;
-  left:14px;
-  right:14px;
-  bottom:calc(12px + env(safe-area-inset-bottom));
-  width:calc(100% - 28px);
-  height:58px;
-  margin:0;
-  z-index:57;
-  border-radius:15px;
-  font-size:15px;
-  box-shadow:0 6px 22px #0004;
-}
-
-.panel.show .captureBtn{
-  display:none;
-}
-
-.panel.show:has(.visionMedia.live) .captureBtn{
-  display:block;
-}
-
-.panel.show .visionMedia.live + #photoInput + .visionText{
-  position:absolute;
-  left:24px;
-  right:24px;
-  bottom:82px;
-  z-index:55;
-  padding:8px 12px;
-  border-radius:12px;
-  background:#0008;
-  color:#fff;
-  font-size:12px;
-  max-height:none;
-  pointer-events:none;
 }
 </style>
 </head>
@@ -836,40 +798,47 @@ header{
 
   <div class="controls">
 
-    <button
-      class="mainListen"
-      id="listen"
-      onclick="listenStory()"
-    >
-      ▶ Слушать гида
-    </button>
-
-    <div class="bottom">
+    <div class="playerNav">
 
       <button
-        class="navBtn"
+        class="navBtn playerSide"
         onclick="previous()"
+        aria-label="Предыдущая остановка"
       >
-        ← Назад
+        <span class="playerIcon">◀</span>
+        <span>Назад</span>
       </button>
 
       <button
-        class="mic"
-        id="micBtn"
-        onclick="startVoiceQuestion()"
-        aria-label="Вопрос гиду"
+        class="mainListen"
+        id="listen"
+        onclick="listenStory()"
+        aria-label="Пуск или пауза"
       >
-        🎙 <span>Вопрос гиду</span>
+        <span class="playIcon">▶</span>
+        <span class="playLabel">Слушать гида</span>
+        <span class="sub">Нажмите, чтобы начать</span>
       </button>
 
       <button
-        class="navBtn"
+        class="navBtn playerSide"
         onclick="next()"
+        aria-label="Следующая остановка"
       >
-        Дальше →
+        <span>Дальше</span>
+        <span class="playerIcon">▶</span>
       </button>
 
     </div>
+
+    <button
+      class="mic"
+      id="micBtn"
+      onclick="startVoiceQuestion()"
+      aria-label="Вопрос гиду"
+    >
+      🎙 <span>Вопрос гиду</span>
+    </button>
 
     <!-- Оставляем элемент для совместимости,
          но CSS больше не даёт ему занимать место -->
@@ -884,7 +853,7 @@ header{
       class="cameraBtn"
       onclick="camera()"
     >
-      📷 Что я вижу? — Включить камеру
+      📷 Что я вижу?
     </button>
 
   </div>
@@ -912,7 +881,7 @@ header{
     ← Вернуться к маршруту
   </button>
 
-  <h2>Что я вижу?</h2>
+  <h2 class="panelTitle">Что я вижу?</h2>
 
   <div
     class="visionMedia"
@@ -943,7 +912,27 @@ header{
     class="visionText"
     id="vision"
   >
-    Наведите камеру на объект.
+    Сфотографируйте объект. WALKAI определит его,
+    покажет название и коротко расскажет о нём.
+  </div>
+
+  <div class="visionActions">
+
+    <button
+      class="visionBtn"
+      onclick="takePhoto()"
+    >
+      📸 Сделать фото
+    </button>
+
+    <button
+      class="visionBtn"
+      id="liveCamBtn"
+      onclick="startCam()"
+    >
+      🎥 Включить камеру
+    </button>
+
   </div>
 
   <button
@@ -953,6 +942,28 @@ header{
   >
     📸 Сфотографировать
   </button>
+
+  <div
+    class="visionResultActions"
+    id="visionResultActions"
+    style="display:none"
+  >
+
+    <button
+      class="speakBtn"
+      onclick="speakVision()"
+    >
+      🔊 Озвучить
+    </button>
+
+    <button
+      class="detailBtn"
+      onclick="visionDetail()"
+    >
+      ✨ Рассказать подробнее
+    </button>
+
+  </div>
 
 </div>
 
@@ -1034,6 +1045,8 @@ let voiceCancelled=false;
 let storyResumeActive=false;
 let storyResumeIndex=-1;
 let storyResumeTime=0;
+let storyLoading=false;
+let storyPaused=false;
 
 const $=id=>document.getElementById(id);
 
@@ -1066,10 +1079,12 @@ function stopAudio(){
     window.speechSynthesis.cancel();
   }
 
+  storyLoading=false;
+  storyPaused=false;
   $('listen').classList.remove('speaking');
 
   $('listen').innerHTML=
-    '▶ Слушать гида';
+    '<span class="playIcon">▶</span><span class="playLabel">Слушать гида</span><span class="sub">Нажмите, чтобы начать</span>';
 
 }
 
@@ -1089,7 +1104,7 @@ function pauseStoryForQuestion(){
     audio.pause();
 
     $('listen').innerHTML=
-      '● Гид на паузе…<span class="sub">Вопрос гиду</span>';
+      '<span class="playIcon">⏸</span><span class="playLabel">Пауза</span><span class="sub">Вопрос гиду</span>';
 
     $('listen').classList.add('speaking');
 
@@ -1130,7 +1145,7 @@ function resumeStoryAfterQuestion(){
   // здесь не нужен: он заставляет браузер заново делать seek и даёт
   // заметную длинную паузу перед продолжением.
   $('listen').innerHTML=
-    '● Продолжаем рассказ… <span class="sub">Пауза после ответа</span>';
+    '<span class="playIcon">⏸</span><span class="playLabel">Продолжаем…</span><span class="sub">Гид продолжит автоматически</span>';
 
   $('listen').classList.add('speaking');
 
@@ -1168,7 +1183,7 @@ function resumeStoryAfterQuestion(){
 
     }
 
-  },500);
+  },350);
 
 }
 
@@ -1215,9 +1230,11 @@ async function preloadStoryAudio(text){
 async function speak(text){
 
   stopAudio();
+  storyLoading=true;
+  storyPaused=false;
 
   $('listen').innerHTML=
-    '● Гид говорит…<span class="sub">Один тап — остановить</span>';
+    '<span class="playIcon">⏳</span><span class="playLabel">Загрузка…</span><span class="sub">Гид готовит рассказ</span>';
 
   $('listen').classList.add('speaking');
 
@@ -1230,6 +1247,7 @@ async function speak(text){
     }
 
     audio=new Audio(cachedUrl);
+    audio.onloadeddata=()=>{storyLoading=false};
 
     audio.onended=()=>stopAudio();
 
@@ -1238,6 +1256,11 @@ async function speak(text){
     };
 
     await audio.play();
+    storyLoading=false;
+    storyPaused=false;
+
+    $('listen').innerHTML=
+      '<span class="playIcon">⏸</span><span class="playLabel">Пауза</span><span class="sub">Нажмите, чтобы поставить на паузу</span>';
 
   }catch(e){
 
@@ -1291,7 +1314,7 @@ async function speakAnswer(text){
   }
 
   $('listen').innerHTML=
-    '● Гид отвечает…<span class="sub">После ответа продолжу рассказ</span>';
+    '<span class="playIcon">🔊</span><span class="playLabel">Гид отвечает…</span><span class="sub">После ответа продолжу рассказ</span>';
 
   $('listen').classList.add('speaking');
 
@@ -1368,56 +1391,46 @@ async function speakAnswer(text){
 
 function listenStory(){
 
-  // Если рассказ уже идёт — ставим его на паузу, не сбрасывая позицию.
+  if(recording || answerAudio){
+    return;
+  }
+
+  if(storyLoading){
+    return;
+  }
+
   if(audio){
 
-    if(audio.ended){
-      stopAudio();
-      speak(data[i].s);
-      return;
-    }
+    if(audio.paused || audio.ended){
 
-    if(audio.paused){
+      try{
 
-      audio.play().catch(()=>{});
+        audio.play();
+        storyPaused=false;
+        $('listen').classList.add('speaking');
+        $('listen').innerHTML=
+          '<span class="playIcon">⏸</span><span class="playLabel">Пауза</span><span class="sub">Нажмите, чтобы поставить на паузу</span>';
 
-      $('listen').classList.add('speaking');
-      $('listen').innerHTML=
-        '● Гид говорит…<span class="sub">Нажмите, чтобы поставить на паузу</span>';
+      }catch(e){}
 
     }else{
 
       audio.pause();
-
-      $('listen').classList.add('speaking');
+      storyPaused=true;
+      $('listen').classList.remove('speaking');
       $('listen').innerHTML=
-        '▶ Гид на паузе<span class="sub">Нажмите, чтобы продолжить</span>';
+        '<span class="playIcon">▶</span><span class="playLabel">Продолжить</span><span class="sub">Нажмите, чтобы продолжить</span>';
 
     }
 
     return;
+
   }
 
-  // Резервная озвучка через speechSynthesis тоже работает как пауза/продолжение.
   if(
     'speechSynthesis' in window &&
     window.speechSynthesis.speaking
   ){
-
-    if(window.speechSynthesis.paused){
-      window.speechSynthesis.resume();
-
-      $('listen').classList.add('speaking');
-      $('listen').innerHTML=
-        '● Гид говорит…<span class="sub">Нажмите, чтобы поставить на паузу</span>';
-    }else{
-      window.speechSynthesis.pause();
-
-      $('listen').classList.add('speaking');
-      $('listen').innerHTML=
-        '▶ Гид на паузе<span class="sub">Нажмите, чтобы продолжить</span>';
-    }
-
     return;
   }
 
@@ -1484,20 +1497,11 @@ function camera(){
 
   p.classList.toggle('show',open);
   b.classList.toggle('show',open);
+  p.classList.remove('cameraLive','photoResult');
 
   if(open){
 
-    // Останавливаем рассказ, чтобы камера и ответ AI не перекрывались.
-    stopAudio();
     resetVision();
-
-    // Сразу после открытия запускаем камеру.
-    // Небольшая задержка нужна, чтобы панель успела появиться.
-    window.setTimeout(()=>{
-      if(p.classList.contains('show')){
-        startCam();
-      }
-    },120);
 
   }else{
 
@@ -1526,10 +1530,24 @@ function resetVision(){
 
   $('captureBtn').style.display='none';
 
-  $('camPanel').classList.remove('busy');
+  $('visionResultActions').style.display='none';
 
-  $('vision').textContent=
-    'Включаю камеру…';
+  $('camPanel').classList.remove('busy','cameraLive','photoResult');
+
+  $('vision').innerHTML=
+    'Сфотографируйте объект. WALKAI определит его, покажет название и коротко расскажет о нём.';
+
+}
+
+function takePhoto(){
+
+  if(
+    $('camPanel').classList.contains('busy')
+  ){
+    return;
+  }
+
+  $('photoInput').click();
 
 }
 
@@ -1552,6 +1570,9 @@ function stopCam(){
   $('visionMedia').classList.remove('live');
 
   $('captureBtn').style.display='none';
+
+  $('liveCamBtn').textContent=
+    '🎥 Включить камеру';
 
 }
 
@@ -1579,9 +1600,6 @@ async function startCam(){
 
     stopCam();
 
-    $('vision').textContent=
-      'Запрашиваю доступ к камере…';
-
     const stream=
       await navigator.mediaDevices.getUserMedia({
         video:{
@@ -1605,8 +1623,12 @@ async function startCam(){
     v.style.display='block';
 
     $('visionMedia').classList.add('live');
+    $('camPanel').classList.add('cameraLive');
 
     $('captureBtn').style.display='block';
+
+    $('liveCamBtn').textContent=
+      '⏹ Выключить камеру';
 
     $('vision').textContent=
       'Наведите камеру на объект и нажмите «Сфотографировать».';
@@ -1705,11 +1727,15 @@ async function analyzeVisionFile(file){
 
   media.classList.remove('live');
   media.classList.add('hasPhoto');
+  $('camPanel').classList.remove('cameraLive');
+  $('camPanel').classList.add('photoResult');
 
   img.src=URL.createObjectURL(file);
   img.style.display='block';
 
   $('camPanel').classList.add('busy');
+
+  $('visionResultActions').style.display='none';
 
   $('vision').innerHTML=
     '<div class="visionLoading"><span class="visionDot"></span> AI анализирует фотографию…</div>';
@@ -1772,8 +1798,8 @@ async function analyzeVisionFile(file){
       )+
       '</div>';
 
-    // После анализа сразу показываем результат и озвучиваем его.
-    await speakVision();
+    $('visionResultActions').style.display=
+      'grid';
 
   }catch(e){
 
@@ -2290,7 +2316,7 @@ async function askAIText(text){
 
     fd.append(
       'text',
-      'Ответь на вопрос пользователя строго по существу. Если вопрос требует одного факта, числа, даты или названия — дай только этот ответ с необходимой единицей измерения. Не добавляй историю, легенды, полёт Хезарфена, контекст, примеры, вступление или заключение. Максимум 1–2 коротких предложения. Не повторяй вопрос. Вопрос пользователя: '+text
+      text
     );
 
     fd.append(
@@ -2355,11 +2381,6 @@ async function askAI(blob){
       'audio',
       blob,
       'question.webm'
-    );
-
-    fd.append(
-      'instruction',
-      'Ответь на вопрос строго по существу. Если нужен один факт, число, дата или название — дай только его. Не добавляй историю, легенды, контекст, примеры или вступление. Максимум 1–2 коротких предложения.'
     );
 
     fd.append(
