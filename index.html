@@ -456,6 +456,13 @@ header{
   border-radius:14px
 }
 
+/* Упрощённый режим «Что я вижу?» */
+.visionActions,
+.visionResultActions{
+  display:none!important
+}
+
+
 .visionText{
   font-size:15px;
   line-height:1.5;
@@ -773,7 +780,7 @@ header{
       class="cameraBtn"
       onclick="camera()"
     >
-      📷 Что я вижу?
+      📷 Что я вижу? — Включить камеру
     </button>
 
   </div>
@@ -832,27 +839,7 @@ header{
     class="visionText"
     id="vision"
   >
-    Сфотографируйте объект. WALKAI определит его,
-    покажет название и коротко расскажет о нём.
-  </div>
-
-  <div class="visionActions">
-
-    <button
-      class="visionBtn"
-      onclick="takePhoto()"
-    >
-      📸 Сделать фото
-    </button>
-
-    <button
-      class="visionBtn"
-      id="liveCamBtn"
-      onclick="startCam()"
-    >
-      🎥 Включить камеру
-    </button>
-
+    Наведите камеру на объект.
   </div>
 
   <button
@@ -862,28 +849,6 @@ header{
   >
     📸 Сфотографировать
   </button>
-
-  <div
-    class="visionResultActions"
-    id="visionResultActions"
-    style="display:none"
-  >
-
-    <button
-      class="speakBtn"
-      onclick="speakVision()"
-    >
-      🔊 Озвучить
-    </button>
-
-    <button
-      class="detailBtn"
-      onclick="visionDetail()"
-    >
-      ✨ Рассказать подробнее
-    </button>
-
-  </div>
 
 </div>
 
@@ -1061,7 +1026,7 @@ function resumeStoryAfterQuestion(){
   // здесь не нужен: он заставляет браузер заново делать seek и даёт
   // заметную длинную паузу перед продолжением.
   $('listen').innerHTML=
-    '● Ответ закончен <span class="sub">Продолжаем маршрут…</span>';
+    '● Продолжаем рассказ… <span class="sub">Пауза после ответа</span>';
 
   $('listen').classList.add('speaking');
 
@@ -1099,7 +1064,7 @@ function resumeStoryAfterQuestion(){
 
     }
 
-  },350);
+  },500);
 
 }
 
@@ -1376,7 +1341,17 @@ function camera(){
 
   if(open){
 
+    // Останавливаем рассказ, чтобы камера и ответ AI не перекрывались.
+    stopAudio();
     resetVision();
+
+    // Сразу после открытия запускаем камеру.
+    // Небольшая задержка нужна, чтобы панель успела появиться.
+    window.setTimeout(()=>{
+      if(p.classList.contains('show')){
+        startCam();
+      }
+    },120);
 
   }else{
 
@@ -1405,24 +1380,10 @@ function resetVision(){
 
   $('captureBtn').style.display='none';
 
-  $('visionResultActions').style.display='none';
-
   $('camPanel').classList.remove('busy');
 
-  $('vision').innerHTML=
-    'Сфотографируйте объект. WALKAI определит его, покажет название и коротко расскажет о нём.';
-
-}
-
-function takePhoto(){
-
-  if(
-    $('camPanel').classList.contains('busy')
-  ){
-    return;
-  }
-
-  $('photoInput').click();
+  $('vision').textContent=
+    'Включаю камеру…';
 
 }
 
@@ -1445,9 +1406,6 @@ function stopCam(){
   $('visionMedia').classList.remove('live');
 
   $('captureBtn').style.display='none';
-
-  $('liveCamBtn').textContent=
-    '🎥 Включить камеру';
 
 }
 
@@ -1475,6 +1433,9 @@ async function startCam(){
 
     stopCam();
 
+    $('vision').textContent=
+      'Запрашиваю доступ к камере…';
+
     const stream=
       await navigator.mediaDevices.getUserMedia({
         video:{
@@ -1500,9 +1461,6 @@ async function startCam(){
     $('visionMedia').classList.add('live');
 
     $('captureBtn').style.display='block';
-
-    $('liveCamBtn').textContent=
-      '⏹ Выключить камеру';
 
     $('vision').textContent=
       'Наведите камеру на объект и нажмите «Сфотографировать».';
@@ -1607,8 +1565,6 @@ async function analyzeVisionFile(file){
 
   $('camPanel').classList.add('busy');
 
-  $('visionResultActions').style.display='none';
-
   $('vision').innerHTML=
     '<div class="visionLoading"><span class="visionDot"></span> AI анализирует фотографию…</div>';
 
@@ -1670,8 +1626,8 @@ async function analyzeVisionFile(file){
       )+
       '</div>';
 
-    $('visionResultActions').style.display=
-      'grid';
+    // После анализа сразу показываем результат и озвучиваем его.
+    await speakVision();
 
   }catch(e){
 
@@ -2188,7 +2144,7 @@ async function askAIText(text){
 
     fd.append(
       'text',
-      text
+      'Ответь на вопрос пользователя строго по существу. Если вопрос требует одного факта, числа, даты или названия — дай только этот ответ с необходимой единицей измерения. Не добавляй историю, легенды, полёт Хезарфена, контекст, примеры, вступление или заключение. Максимум 1–2 коротких предложения. Не повторяй вопрос. Вопрос пользователя: '+text
     );
 
     fd.append(
@@ -2253,6 +2209,11 @@ async function askAI(blob){
       'audio',
       blob,
       'question.webm'
+    );
+
+    fd.append(
+      'instruction',
+      'Ответь на вопрос строго по существу. Если нужен один факт, число, дата или название — дай только его. Не добавляй историю, легенды, контекст, примеры или вступление. Максимум 1–2 коротких предложения.'
     );
 
     fd.append(
