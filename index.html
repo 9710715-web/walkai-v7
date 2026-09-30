@@ -951,10 +951,14 @@ const data=[
 
 let i=0;
 let audio=null;
+let answerAudio=null;
 let recording=false;
 let recorder=null;
 let chunks=[];
 let voiceCancelled=false;
+let storyResumeActive=false;
+let storyResumeIndex=-1;
+let storyResumeTime=0;
 
 const $=id=>document.getElementById(id);
 
@@ -977,6 +981,12 @@ function stopAudio(){
     audio=null;
   }
 
+  if(answerAudio){
+    answerAudio.pause();
+    answerAudio.currentTime=0;
+    answerAudio=null;
+  }
+
   if('speechSynthesis' in window){
     window.speechSynthesis.cancel();
   }
@@ -985,6 +995,82 @@ function stopAudio(){
 
   $('listen').innerHTML=
     '▶ Слушать гида<span class="sub">Естественный AI-голос</span>';
+
+}
+
+function pauseStoryForQuestion(){
+
+  if(
+    audio &&
+    !audio.paused &&
+    !audio.ended &&
+    Number.isFinite(audio.currentTime)
+  ){
+
+    storyResumeActive=true;
+    storyResumeIndex=i;
+    storyResumeTime=audio.currentTime;
+
+    audio.pause();
+
+    $('listen').innerHTML=
+      '● Гид на паузе…<span class="sub">Вопрос гиду</span>';
+
+    $('listen').classList.add('speaking');
+
+  }else{
+
+    storyResumeActive=false;
+    storyResumeIndex=-1;
+    storyResumeTime=0;
+
+  }
+
+}
+
+function resumeStoryAfterQuestion(){
+
+  if(
+    !storyResumeActive ||
+    storyResumeIndex!==i ||
+    !audio
+  ){
+
+    storyResumeActive=false;
+    storyResumeIndex=-1;
+    storyResumeTime=0;
+    return;
+
+  }
+
+  const pos=storyResumeTime;
+
+  storyResumeActive=false;
+  storyResumeIndex=-1;
+  storyResumeTime=0;
+
+  try{
+
+    audio.currentTime=pos;
+
+    $('listen').innerHTML=
+      '● Гид говорит…<span class="sub">Продолжение</span>';
+
+    $('listen').classList.add('speaking');
+
+    const playPromise=audio.play();
+
+    if(playPromise?.catch){
+      playPromise.catch(()=>{
+        stopAudio();
+      });
+    }
+
+  }catch(e){
+
+    stopAudio();
+
+  }
 
 }
 
@@ -1051,6 +1137,99 @@ async function speak(text){
     }else{
 
       stopAudio();
+
+      toast(
+        'В этом браузере нет поддержки озвучки'
+      );
+
+    }
+
+  }
+
+}
+
+async function speakAnswer(text){
+
+  if(!text){
+    resumeStoryAfterQuestion();
+    return;
+  }
+
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+  }
+
+  if(answerAudio){
+    answerAudio.pause();
+    answerAudio.currentTime=0;
+    answerAudio=null;
+  }
+
+  $('listen').innerHTML=
+    '● Гид отвечает…<span class="sub">После ответа продолжу рассказ</span>';
+
+  $('listen').classList.add('speaking');
+
+  try{
+
+    const r=await fetch(
+      '/api/tts',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({text})
+      }
+    );
+
+    if(!r.ok){
+      throw new Error('TTS '+r.status);
+    }
+
+    const blob=await r.blob();
+
+    answerAudio=new Audio(
+      URL.createObjectURL(blob)
+    );
+
+    answerAudio.onended=()=>{
+      answerAudio=null;
+      resumeStoryAfterQuestion();
+    };
+
+    answerAudio.onerror=()=>{
+      answerAudio=null;
+      resumeStoryAfterQuestion();
+    };
+
+    await answerAudio.play();
+
+  }catch(e){
+
+    answerAudio=null;
+
+    if('speechSynthesis' in window){
+
+      const u=new SpeechSynthesisUtterance(text);
+
+      u.lang='ru-RU';
+      u.rate=.96;
+      u.pitch=1;
+
+      u.onend=()=>resumeStoryAfterQuestion();
+
+      u.onerror=()=>{
+        resumeStoryAfterQuestion();
+        toast('Не удалось включить звук');
+      };
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+
+    }else{
+
+      resumeStoryAfterQuestion();
 
       toast(
         'В этом браузере нет поддержки озвучки'
@@ -1670,12 +1849,11 @@ async function startVoiceQuestion(){
       'Вопрос отменён'
     );
 
+    resumeStoryAfterQuestion();
     return;
 
   }
-
-  stopAudio();
-
+  pauseStoryForQuestion();
   voiceCancelled=false;
 
   if(!window.isSecureContext){
@@ -1728,6 +1906,7 @@ async function startVoiceQuestion(){
         if(!text){
 
           setMicState('');
+          resumeStoryAfterQuestion();
 
           return;
 
@@ -1758,6 +1937,12 @@ async function startVoiceQuestion(){
             :
             'Не удалось распознать вопрос'
           );
+
+          resumeStoryAfterQuestion();
+
+        }else if(voiceCancelled){
+
+          resumeStoryAfterQuestion();
 
         }
 
@@ -1799,6 +1984,7 @@ async function startVoiceQuestion(){
       'Браузер не даёт доступ к микрофону. Попробуйте Chrome на Android.'
     );
 
+    resumeStoryAfterQuestion();
     return;
 
   }
@@ -1897,6 +2083,8 @@ async function startVoiceQuestion(){
       'Не удалось включить микрофон'
     );
 
+    resumeStoryAfterQuestion();
+
   }
 
 }
@@ -1975,11 +2163,13 @@ async function askAIText(text){
 
     const x=await r.json();
 
-    await speak(
+    await speakAnswer(
       x.answer||''
     );
 
   }catch(e){
+
+    resumeStoryAfterQuestion();
 
     toast(
       'Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.'
@@ -2037,11 +2227,13 @@ async function askAI(blob){
 
     const x=await r.json();
 
-    await speak(
+    await speakAnswer(
       x.answer||''
     );
 
   }catch(e){
+
+    resumeStoryAfterQuestion();
 
     toast(
       'Не удалось получить ответ гида. Проверьте сервер и OPENAI_API_KEY.'
