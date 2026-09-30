@@ -902,6 +902,168 @@ header{
   pointer-events:none;
 }
 </style>
+<style>
+/* WALKAI V7 — финальная компоновка кнопок и камеры */
+.actionRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  width:100%;
+  margin-top:8px;
+}
+.actionRow .mic,.actionRow .cameraBtn{
+  width:100%;
+  height:52px;
+  min-width:0;
+  margin:0;
+  padding:0 8px;
+  border:0;
+  border-radius:15px;
+  background:#111;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-shadow:0 4px 14px #00018;
+}
+.actionRow .cameraBtn{background:#eeeae2;color:#151515}
+.actionIcon{font-size:16px;line-height:1}
+
+/* Камера: действительно полноэкранная, без растянутых панелей */
+.panel.show{
+  padding:0 !important;
+  border-radius:0 !important;
+}
+.panel.show .panelClose{
+  top:calc(12px + env(safe-area-inset-top));
+  left:12px;
+  right:auto;
+  width:40px;
+  min-width:40px;
+  height:40px;
+  padding:0;
+  border-radius:50%;
+  background:#f5f3efee;
+  color:#151515;
+  font-size:0;
+  box-shadow:0 4px 18px #0005;
+}
+.panel.show .panelClose::before{
+  content:'←';
+  font-size:20px;
+  font-weight:900;
+}
+.panel.show .visionMedia{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  width:100% !important;
+  margin:0 !important;
+  border-radius:0 !important;
+}
+.panel.show .visionMedia.live video{
+  width:100%;
+  height:100%;
+  max-height:none;
+  object-fit:cover;
+}
+
+/* Компактная круглая кнопка фото с подписью */
+.panel.show .captureBtn,.panel.show:has(.visionMedia.live) .captureBtn{
+  position:fixed;
+  left:50%;
+  right:auto;
+  bottom:calc(8px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  width:118px;
+  height:104px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  box-shadow:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:5px;
+}
+.panel.show:has(.visionMedia.live) .captureBtn{display:flex !important}
+.captureShutter{
+  position:relative;
+  display:block;
+  width:72px;
+  height:72px;
+  flex:0 0 72px;
+  border:4px solid #fff;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 5px 22px #0008;
+}
+.captureShutter::after{
+  content:'';
+  position:absolute;
+  inset:7px;
+  border-radius:50%;
+  border:2px solid #111;
+  background:#fff;
+}
+.captureLabel{
+  display:block;
+  padding:5px 10px;
+  border-radius:12px;
+  background:#111c;
+  color:#fff;
+  white-space:nowrap;
+  line-height:1;
+}
+.panel.show:has(.visionMedia.live) .visionText{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:calc(108px + env(safe-area-inset-bottom));
+  z-index:55;
+  max-height:72px;
+  padding:9px 12px;
+  border-radius:14px;
+  background:#111c;
+  color:#fff;
+  font-size:12px;
+}
+
+/* После снимка: фото не уходит под кнопку возврата */
+.panel.show .visionMedia.hasPhoto{
+  padding-top:58px;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  box-sizing:border-box;
+}
+.panel.show .visionMedia.hasPhoto img{
+  width:100%;
+  height:100%;
+  max-height:none;
+  object-fit:contain;
+}
+.panel.show.photoResult .visionText{
+  left:14px;
+  right:14px;
+  bottom:14px;
+  max-height:38dvh;
+  padding:13px 15px;
+  border-radius:17px;
+  background:#fff;
+  color:#151515;
+}
+
+@media(max-width:430px){
+  .actionRow{gap:7px}
+  .actionRow .mic,.actionRow .cameraBtn{font-size:11px}
+}
+</style>
 </head>
 
 <body>
@@ -996,23 +1158,30 @@ header{
 
     </div>
 
-    <button
-      class="mic"
-      id="micBtn"
-      onclick="startVoiceQuestion()"
-      aria-label="Вопрос гиду"
-    >
-      🎙 <span>Вопрос гиду</span>
-    </button>
+    <div class="actionRow">
+
+      <button
+        class="mic"
+        id="micBtn"
+        onclick="startVoiceQuestion()"
+        aria-label="Вопрос гиду"
+      >
+        <span class="actionIcon">🎙</span>
+        <span>Вопрос гиду</span>
+      </button>
+
+      <button
+        class="cameraBtn"
+        onclick="camera()"
+        aria-label="Что я вижу? Сделать фото"
+      >
+        <span class="actionIcon">📷</span>
+        <span>Что я вижу?</span>
+      </button>
+
+    </div>
 
     <div class="voiceStatus" id="voiceStatus">Слушаю…</div>
-
-    <button
-      class="cameraBtn"
-      onclick="camera()"
-    >
-      📷 Что я вижу?
-    </button>
 
   </div>
 
@@ -1080,7 +1249,8 @@ header{
     id="captureBtn"
     onclick="capturePhoto()"
   >
-    📸 Сфотографировать
+    <span class="captureShutter" aria-hidden="true"></span>
+    <span class="captureLabel">Сфотографировать</span>
   </button>
 
 </div>
@@ -1858,6 +2028,7 @@ async function analyzeVisionFile(file){
 
   media.classList.remove('live');
   media.classList.add('hasPhoto');
+  $('camPanel').classList.add('photoResult');
 
   img.src=URL.createObjectURL(file);
   img.style.display='block';
