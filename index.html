@@ -680,6 +680,111 @@ header{
 .visionMedia.hasPhoto img{
   display:block
 }
+<style>
+/* WALKAI V7 — камера на весь экран, кнопка фото закреплена снизу */
+.panel.show{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  padding:0 14px calc(78px + env(safe-area-inset-bottom));
+  border-radius:22px 22px 0 0;
+}
+
+.panel.show h2{
+  display:none;
+}
+
+.panel.show .panelClose{
+  position:absolute;
+  top:10px;
+  left:14px;
+  right:14px;
+  width:calc(100% - 28px);
+  margin:0;
+  z-index:56;
+  background:#f5f3efee;
+  backdrop-filter:blur(6px);
+}
+
+.panel.show .visionMedia{
+  flex:1 1 auto;
+  min-height:0;
+  width:100%;
+  margin:0;
+  border-radius:0;
+}
+
+.panel.show .visionMedia.live{
+  height:100%;
+}
+
+.panel.show .visionMedia.live video,
+.panel.show #cam{
+  width:100%;
+  height:100%;
+  max-height:none;
+  min-height:0;
+  object-fit:cover;
+  border-radius:0;
+}
+
+.panel.show .visionMedia.hasPhoto{
+  flex:0 0 auto;
+  height:auto;
+  max-height:55dvh;
+}
+
+.panel.show .visionMedia.hasPhoto img{
+  width:100%;
+  height:auto;
+  max-height:55dvh;
+  object-fit:contain;
+  border-radius:0;
+}
+
+.panel.show .visionText{
+  flex:0 0 auto;
+  max-height:30dvh;
+  overflow:auto;
+  padding:12px 2px 8px;
+}
+
+.panel.show .captureBtn{
+  position:fixed;
+  left:14px;
+  right:14px;
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  width:calc(100% - 28px);
+  height:58px;
+  margin:0;
+  z-index:57;
+  border-radius:15px;
+  font-size:15px;
+  box-shadow:0 6px 22px #0004;
+}
+
+.panel.show .captureBtn{
+  display:none;
+}
+
+.panel.show:has(.visionMedia.live) .captureBtn{
+  display:block;
+}
+
+.panel.show .visionMedia.live + #photoInput + .visionText{
+  position:absolute;
+  left:24px;
+  right:24px;
+  bottom:82px;
+  z-index:55;
+  padding:8px 12px;
+  border-radius:12px;
+  background:#0008;
+  color:#fff;
+  font-size:12px;
+  max-height:none;
+  pointer-events:none;
+}
 </style>
 </head>
 
@@ -737,7 +842,6 @@ header{
       onclick="listenStory()"
     >
       ▶ Слушать гида
-      <span class="sub">Естественный AI-голос</span>
     </button>
 
     <div class="bottom">
@@ -965,7 +1069,7 @@ function stopAudio(){
   $('listen').classList.remove('speaking');
 
   $('listen').innerHTML=
-    '▶ Слушать гида<span class="sub">Естественный AI-голос</span>';
+    '▶ Слушать гида';
 
 }
 
@@ -1264,14 +1368,56 @@ async function speakAnswer(text){
 
 function listenStory(){
 
+  // Если рассказ уже идёт — ставим его на паузу, не сбрасывая позицию.
+  if(audio){
+
+    if(audio.ended){
+      stopAudio();
+      speak(data[i].s);
+      return;
+    }
+
+    if(audio.paused){
+
+      audio.play().catch(()=>{});
+
+      $('listen').classList.add('speaking');
+      $('listen').innerHTML=
+        '● Гид говорит…<span class="sub">Нажмите, чтобы поставить на паузу</span>';
+
+    }else{
+
+      audio.pause();
+
+      $('listen').classList.add('speaking');
+      $('listen').innerHTML=
+        '▶ Гид на паузе<span class="sub">Нажмите, чтобы продолжить</span>';
+
+    }
+
+    return;
+  }
+
+  // Резервная озвучка через speechSynthesis тоже работает как пауза/продолжение.
   if(
-    audio ||
-    (
-      'speechSynthesis' in window &&
-      window.speechSynthesis.speaking
-    )
+    'speechSynthesis' in window &&
+    window.speechSynthesis.speaking
   ){
-    stopAudio();
+
+    if(window.speechSynthesis.paused){
+      window.speechSynthesis.resume();
+
+      $('listen').classList.add('speaking');
+      $('listen').innerHTML=
+        '● Гид говорит…<span class="sub">Нажмите, чтобы поставить на паузу</span>';
+    }else{
+      window.speechSynthesis.pause();
+
+      $('listen').classList.add('speaking');
+      $('listen').innerHTML=
+        '▶ Гид на паузе<span class="sub">Нажмите, чтобы продолжить</span>';
+    }
+
     return;
   }
 
